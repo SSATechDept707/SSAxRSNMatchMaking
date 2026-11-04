@@ -7,7 +7,10 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.67.0",
     "nodemon": "^3.1.14",
-    "vite": "^8.3.5",
     "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.2.1",
+    "vite": "^8.3.5"
   }
 }
