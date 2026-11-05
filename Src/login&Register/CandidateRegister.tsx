@@ -10,7 +10,7 @@ export default function CandidateLogin() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    function handleRegister() {
+   async function handleRegister() {
         setError("");
         setLoading(true);
         try {
