@@ -15,7 +15,8 @@ export default async function handler(req, res) {
           }
           res.status(405).end();
     } catch(e) {
-        res.status(500).json({ error: "Server error" });
+      console.error(e);
+      res.status(500).json({ error: "Server error" });
     }
 }
 //encryption needed
@@ -31,7 +32,7 @@ RETURNING id, full_name, email
 return rows[0];
 }
 
-function getCandidateById(id) {
+ async function getCandidateById(id) {
 const rows = await sql`SELECT * FROM candidates WHERE id = ${id}`;
 if(!rows[0]) return null;
 
