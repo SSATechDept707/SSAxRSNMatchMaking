@@ -42,32 +42,38 @@ export default function CandidateLogin() {
 
                     {/* Login buttons */}
                     <div className="flex flex-col gap-2">
-                    <Field label="Email">
-                        <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
-                        />
-                        </Field>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                            Email
+                        </label>
 
-                        <Field label="Password">
-                        <input 
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
                         />
-                        </Field>
-                    
+
+
+                        <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
+
+
                         <button
                             onClick={() => navigate("../Candidates/Homepage")}
                             className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
                         >
-                           Login
+                            Login
                         </button>
 
-                       <p>Don't have an account? Register <Link to="/Registration" className="underline">here</Link></p>
+                        <p>Don't have an account? Register <Link to="/Registration" className="underline">here</Link></p>
 
                     </div>
 
