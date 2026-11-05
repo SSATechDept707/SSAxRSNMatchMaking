@@ -95,7 +95,7 @@ export default function CandidateRegister() {
                 <div className="bg-white/95 w-[clamp(280px,32vw,520px)] translate-y-12 rounded-[38px] px-[clamp(1.5rem,3vw,2.5rem)] py-[clamp(2rem,4vw,3.5rem)] text-center shadow-xl">
 
                     <h1 className="text-[#4B5563] text-[clamp(18px,1.8vw,26px)] font-bold leading-tight mb-[clamp(1.5rem,3vw,3rem)]">
-                        Register as a Candidate
+                        Register as Member
                     </h1>
                     {step === 1 && (
                         <>
