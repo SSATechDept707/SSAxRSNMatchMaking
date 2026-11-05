@@ -31,7 +31,7 @@ export default function LandingPage() {
       >
 
         {/* Login card */}
-        <div className="bg-white w-full max-w-[460px] translate-y-12 rounded-[38px] px-10 py-14 text-center shadow-xl">
+        <div className="bg-white w-full max-w-[460px] translate-y-16 rounded-[38px] px-10 py-14 text-center shadow-xl">
 
           <h1 className="text-[#4B5563] text-[23px] font-bold leading-tight mb-12">
             Welcome to
