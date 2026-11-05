@@ -42,7 +42,7 @@ export default function CandidateLogin() {
 
                     {/* Login buttons */}
                     <div className="flex flex-col gap-2">
-                        <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                        <label className="block text-xs font-semibold text-gray-600">
                             Email
                         </label>
 
@@ -54,7 +54,7 @@ export default function CandidateLogin() {
                         />
 
 
-                        <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                        <label className="block text-xs font-semibold text-gray-600">
                             Password
                         </label>
 
