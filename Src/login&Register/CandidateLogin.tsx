@@ -73,7 +73,7 @@ export default function CandidateLogin() {
                             Login
                         </button>
 
-                        <p>Don't have an account? Register <Link to="/Registration" className="underline">here</Link></p>
+                        <p>Don't have an account? Register <Link to="/CandidateRegister" className="underline">here</Link></p>
 
                     </div>
 
