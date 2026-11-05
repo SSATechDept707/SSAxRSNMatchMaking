@@ -42,20 +42,23 @@ export default function CandidateLogin() {
 
                     {/* Login buttons */}
                     <div className="flex flex-col gap-2">
-
+                    <Field label="Email">
                         <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full border rounded-lg px-3 py-2"
                         />
+                        </Field>
+
+                        <Field label="Password">
                         <input 
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full border rounded-lg px-3 py-2"
                         />
-
+                        </Field>
                     
                         <button
                             onClick={() => navigate("../Candidates/Homepage")}
