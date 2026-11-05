@@ -8,8 +8,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/Login" element={<CandidateLogin />} />
-      <Route path="/Register" element={<CandidateRegister />} />
+      <Route path="/CandidateLogin" element={<CandidateLogin />} />
+      <Route path="/CandidateRegister" element={<CandidateRegister />} />
     </Routes>
   );
 }
