@@ -21,13 +21,17 @@ export default async function handler(req, res) {
           expires_at = now() + interval '10 minutes',
           attempts = 0`;
 
-    await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: email,
-      subject: "Your verification code",
-      text: `Your code is ${code}. It expires in 10 minutes.`,
-    });
-
+          const { data, error } = await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: email,
+            subject: "Your verification code",
+            text: `Your code is ${code}. It expires in 10 minutes.`,
+          });
+          
+          if (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Could not send code" });
+          }
     res.status(200).json({ ok: true });
   } catch (e) {
     console.error(e);
