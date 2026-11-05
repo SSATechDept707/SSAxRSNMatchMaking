@@ -14,7 +14,7 @@ export default function LandingPage() {
           alt="Singapore Shipping Association"
           className="h-[38px] w-auto object-contain"
         />
-      </header>
+      </header> 
 
       {/* Purple background with image overlay */}
       <main
@@ -25,7 +25,7 @@ export default function LandingPage() {
               rgba(38, 34, 97, 0.35),
               rgba(38, 34, 97, 0.45)
             ),
-            url('Src/src-images/Background.png')
+            url('https://raw.githubusercontent.com/SSATechDept707/SSAxRSNMatchMaking/refs/heads/main/Src/src-images/Background.png')
           `
         }}
       >
