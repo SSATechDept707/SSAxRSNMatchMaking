@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import {encrypt, decrypt} from "./lib/crypto.js";
 const sql = neon(process.env.DATABASE_URL);
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
    
 
     try{
@@ -28,7 +28,7 @@ INSERT INTO candidates (full_name, email, passwd)
 VALUES (${name}, ${encryptedEmail}, ${passwowrdHash})
 RETURNING id, full_name, email
 `;
-
+return rows[0];
 }
 
 function getCandidateById(id) {
