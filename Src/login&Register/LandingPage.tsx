@@ -45,14 +45,14 @@ export default function LandingPage() {
                     <div className="flex flex-col gap-2">
 
                         <button
-                            onClick={() => navigate("/CandidateLogin")}
+                            onClick={() => navigate("./CandidateLogin")}
                             className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
                         >
                             RSN Candidates
                         </button>
 
                         <button
-                            onClick={() => navigate("/MemberLogin-login")}
+                            onClick={() => navigate("./MemberLogin-login")}
                             className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
                         >
                             SSA Staff & Member Companies
