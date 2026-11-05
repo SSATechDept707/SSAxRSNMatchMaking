@@ -10,7 +10,7 @@ export default function LandingPage() {
             {/* White top navigation bar */}
             <header className="h-[60px] pl-4 shrink-0 bg-white flex items-center px-6 z-10">
                 <img
-                    src="https://raw.githubusercontent.com/SSATechDept707/SSAxRSNMatchMaking/refs/heads/main/Src/src-images/SSA-logo.png"
+                    src="/images/SSA-logo.png"
                     alt="Singapore Shipping Association"
                     className="h-[38px] w-auto object-contain"
                 />
@@ -25,7 +25,7 @@ export default function LandingPage() {
               rgba(38, 34, 97, 0.35),
               rgba(38, 34, 97, 0.45)
             ),
-            url('https://raw.githubusercontent.com/SSATechDept707/SSAxRSNMatchMaking/refs/heads/main/Src/src-images/Background.png')
+            url('/images/Background.png')
           `
                 }}
             >
