@@ -9,30 +9,62 @@ export default function CandidateRegister() {
     const [name, setName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [step, setStep] = useState(1);
+    const [code, setCode] = useState("");
 
-   async function handleRegister() {
+
+    async function handleSendCode() {
         setError("");
         setLoading(true);
         try {
-        const res = await fetch("/api/candidates", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password }),
-          });
-          const data = await res.json();
-      
-          if (!res.ok) {
-            setError(data.error || "Registration failed");
-            return;
-          }
-          navigate("/CandidateLogin");
+            const res = await fetch("/api/send-code", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+            if (!res.ok) {
+                setError("Could not send code");
+                return;
+            }
+            setStep(2);
         } catch {
-          setError("Network error, please try again");
+            setError("Network error, please try again");
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
     }
 
+    async function handleVerifyAndRegister() {
+        setError("");
+        setLoading(true);
+        try {
+            const verifyRes = await fetch("/api/verify-code", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, code }),
+            });
+            if (!verifyRes.ok) {
+                setError("Invalid or expired code");
+                return;
+            }
+
+            const res = await fetch("/api/candidates", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setError(data.error || "Registration failed");
+                return;
+            }
+            navigate("/CandidateLogin");
+        } catch {
+            setError("Network error, please try again");
+        } finally {
+            setLoading(false);
+        }
+    }
     return (
         <div className="min-h-screen w-full flex flex-col">
 
@@ -63,12 +95,12 @@ export default function CandidateRegister() {
                 <div className="bg-white/95 w-[clamp(280px,32vw,520px)] translate-y-12 rounded-[38px] px-[clamp(1.5rem,3vw,2.5rem)] py-[clamp(2rem,4vw,3.5rem)] text-center shadow-xl">
 
                     <h1 className="text-[#4B5563] text-[clamp(18px,1.8vw,26px)] font-bold leading-tight mb-[clamp(1.5rem,3vw,3rem)]">
-                       Register as a Candidate
+                        Register as a Candidate
                     </h1>
 
                     {/* Login buttons */}
                     <div className="flex flex-col gap-2">
-                    <label className="block text-xs font-semibold text-gray-600">
+                        <label className="block text-xs font-semibold text-gray-600">
                             Full Name
                         </label>
 
@@ -101,13 +133,13 @@ export default function CandidateRegister() {
                             className="w-full border rounded-lg px-3 py-2"
                         />
 
-{error && <p className="text-red-600 text-sm">{error}</p>}
+                        {error && <p className="text-red-600 text-sm">{error}</p>}
                         <button
-                          onClick={handleRegister}
-                          disabled={loading}
+                            onClick={handleVerifyAndRegister}
+                            disabled={loading}
                             className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
                         >
-                           {loading ? "Registering..." : "Register"}
+                            {loading ? "Registering..." : "Register"}
                         </button>
 
                         <p>Already have an account? Login <Link to="/CandidateLogin" className="underline">here</Link></p>

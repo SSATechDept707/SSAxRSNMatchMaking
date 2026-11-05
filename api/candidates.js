@@ -27,7 +27,7 @@ const encryptedEmail = encrypt(email);
 const rows = await sql ` 
 INSERT INTO candidates (full_name, email, passwd)
 VALUES (${name}, ${encryptedEmail}, ${passwowrdHash})
-RETURNING id, full_name, email
+RETURNING id, full_name
 `;
 return rows[0];
 }
