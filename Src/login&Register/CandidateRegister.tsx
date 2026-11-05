@@ -69,7 +69,7 @@ export default function CandidateRegister() {
                     {/* Login buttons */}
                     <div className="flex flex-col gap-2">
                     <label className="block text-xs font-semibold text-gray-600">
-                            Email
+                            Full Name
                         </label>
 
                         <input
