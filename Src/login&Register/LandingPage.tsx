@@ -31,22 +31,9 @@ export default function LandingPage() {
             >
 
                 {/* Login card */}
-                <div className="
-  bg-white/95
-  w-full
-  max-w-[460px]
-  sm:max-w-[420px]
-  md:max-w-[440px]
-  lg:max-w-[460px]
-  translate-y-12
-  rounded-[30px]
-  px-5 sm:px-8 md:px-10
-  py-8 sm:py-10 md:py-14
-  text-center
-  shadow-xl
-">
+                <div className="bg-white/95 w-[clamp(280px,32vw,520px)] translate-y-12 rounded-[38px] px-[clamp(1.5rem,3vw,2.5rem)] py-[clamp(2rem,4vw,3.5rem)] text-center shadow-xl">
 
-                    <h1 className="text-[#4B5563] text-[23px] font-bold leading-tight mb-12">
+                    <h1 className="text-[#4B5563] text-[clamp(18px,1.8vw,26px)] font-bold leading-tight mb-[clamp(1.5rem,3vw,3rem)]">
                         Welcome to
                         <br />
                         SSA x RSN
@@ -59,14 +46,14 @@ export default function LandingPage() {
 
                         <button
                             onClick={() => navigate("/CandidateLogin")}
-                            className="w-full bg-[#262261] hover:bg-[#393481] text-white py-3 rounded-xl text-[17px] transition-all duration-200 hover:-translate-y-0.5"
+                            className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
                         >
                             RSN Candidates
                         </button>
 
                         <button
                             onClick={() => navigate("/MemberLogin-login")}
-                            className="w-full bg-[#262261] hover:bg-[#393481] text-white py-3 rounded-xl text-[17px] transition-all duration-200 hover:-translate-y-0.5"
+                            className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
                         >
                             SSA Staff & Member Companies
                         </button>
