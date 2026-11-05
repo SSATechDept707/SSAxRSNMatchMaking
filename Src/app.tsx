@@ -1,5 +1,4 @@
-import { useEffect,useState } from "react";
-
+import LandingPage from "./login&Register/LandingPage";
 
 export default function App() {
 
@@ -7,7 +6,7 @@ export default function App() {
 
   return (
 <div>
-
+<LandingPage />
 </div>
   );
 }
