@@ -45,9 +45,9 @@ async function registerCompany(sql, b) {
   }
   
   // login
-  async function getMember(sql, { email, password }) {
+  async function memberLogin(sql, { email, password }) {
     const [acct] = await sql`
-      SELECT id, company_id, email, passwd, is_rep, approved
+      SELECT id, company_id, email, passwd, approved
       FROM company_accounts WHERE email = ${email}`;
   
     const ok = acct && (await bcrypt.compare(password, acct.passwd));
