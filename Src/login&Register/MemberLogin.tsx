@@ -73,7 +73,7 @@ export default function MemberLogin() {
                             Login
                         </button>
 
-                        <p>Don't have an account? Register <Link to="/CandidateRegister" className="underline">here</Link></p>
+                        <p>Don't have an account? Register <Link to="/MemberRegister" className="underline">here</Link></p>
 
                     </div>
 

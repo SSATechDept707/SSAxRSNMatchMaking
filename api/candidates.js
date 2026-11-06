@@ -91,7 +91,7 @@ async function candidateLogin(email, password) {
       SELECT * FROM candidates
       WHERE email_lookup = ${emailLookup}
   `;
-
+  console.log("rows found:", rows.length);
   if (!rows[0]) return null;
 
   const candidate = rows[0];
@@ -100,7 +100,7 @@ async function candidateLogin(email, password) {
       password,
       candidate.passwd
   );
-
+  console.log("password valid:", validPassword);
   if (!validPassword) return null;
 
   return {
