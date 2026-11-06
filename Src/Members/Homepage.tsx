@@ -6,6 +6,7 @@ type Tab = "jobs" | "applicants";
 export default function Homepage() {
     const [showForm, setShowForm] = useState(false);
     const [tab, setTab] = useState<Tab>("jobs");
+    const [name, SetName] = useState("")
 
     const tabClass = (t: Tab) =>
         `text-[clamp(16px,1.6vw,22px)] font-semibold transition-opacity ${
