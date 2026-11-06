@@ -68,7 +68,7 @@ async function createCandidate({ name, email, password }) {
   const emailLookup = hashEmail(normalizedEmail);
 
   const rows = await sql`
-      INSERT INTO candidates (full_name, email, email_lookup, passwd)
+      INSERT INTO candidates (full_name, email, passwd, email_lookup)
       VALUES (
           ${name},
           ${encryptedEmail},
