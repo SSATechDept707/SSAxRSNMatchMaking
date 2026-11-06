@@ -6,7 +6,40 @@ export default function CandidateLogin() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
+    async function handleLogin() {
+        setError("");
+        setLoading(true);
+    
+        try {
+            const res = await fetch("/api/candidates", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: "login",
+                    email,
+                    password
+                }),
+            });
+    
+            const data = await res.json();
+    
+            if (!res.ok) {
+                setError(data.error || "Invalid email or password");
+                return;
+            }
+    
+            navigate("/Candidates/Homepage");
+    
+        } catch {
+            setError("Network error, please try again");
+        } finally {
+            setLoading(false);
+        }
+    }
+    
     return (
         <div className="min-h-screen w-full flex flex-col">
 
@@ -49,6 +82,7 @@ export default function CandidateLogin() {
                         <input
                             type="email"
                             value={email}
+                            required
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
@@ -61,13 +95,19 @@ export default function CandidateLogin() {
                         <input
                             type="password"
                             value={password}
+                            required
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
-
+{error && (
+    <p className="text-red-500 text-sm text-left">
+        {error}
+    </p>
+)}
 
                         <button
-                            onClick={() => navigate("../Candidates/Homepage")}
+                             onClick={handleLogin}
+                             disabled={loading}
                             className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
                         >
                             Login

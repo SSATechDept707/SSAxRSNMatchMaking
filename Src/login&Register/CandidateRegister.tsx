@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-
 export default function CandidateRegister() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -9,51 +8,18 @@ export default function CandidateRegister() {
     const [name, setName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [step, setStep] = useState(1);
-    const [code, setCode] = useState("");
 
-
-    async function handleSendCode() {
+    async function handleRegister() {
         setError("");
         setLoading(true);
         try {
-            const res = await fetch("/api/send-code", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-            });
-            if (!res.ok) {
-                setError("Could not send code");
-                return;
-            }
-            setStep(2);
-        } catch {
-            setError("Network error, please try again");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function handleVerifyAndRegister() {
-        setError("");
-        setLoading(true);
-        try {
-            const verifyRes = await fetch("/api/verify-code", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, code }),
-            });
-            if (!verifyRes.ok) {
-                setError("Invalid or expired code");
-                return;
-            }
-
             const res = await fetch("/api/candidates", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, password }),
             });
             const data = await res.json();
+
             if (!res.ok) {
                 setError(data.error || "Registration failed");
                 return;
@@ -65,6 +31,7 @@ export default function CandidateRegister() {
             setLoading(false);
         }
     }
+
     return (
         <div className="min-h-screen w-full flex flex-col">
 
@@ -97,72 +64,50 @@ export default function CandidateRegister() {
                     <h1 className="text-[#4B5563] text-[clamp(18px,1.8vw,26px)] font-bold leading-tight mb-[clamp(1.5rem,3vw,3rem)]">
                         Register as a Candidate
                     </h1>
-                    {step === 1 && (
-                        <>
-                            {/* Login buttons */}
-                            <div className="flex flex-col gap-2">
-                                <label className="block text-xs font-semibold text-gray-600">
-                                    Full Name
-                                </label>
 
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                />
-                                <label className="block text-xs font-semibold text-gray-600">
-                                    Email
-                                </label>
+                    <div className="flex flex-col gap-2">
+                        <label className="block text-xs font-semibold text-gray-600">
+                            Full Name
+                        </label>
+                        <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
 
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                />
+                        <label className="block text-xs font-semibold text-gray-600">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
 
+                        <label className="block text-xs font-semibold text-gray-600">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
 
-                                <label className="block text-xs font-semibold text-gray-600">
-                                    Password
-                                </label>
+                        {error && <p className="text-red-600 text-sm">{error}</p>}
 
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full border rounded-lg px-3 py-2"
-                                />
+                        <button
+                            onClick={handleRegister}
+                            disabled={loading}
+                            className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
+                        >
+                            {loading ? "Registering..." : "Register"}
+                        </button>
 
-                                {error && <p className="text-red-600 text-sm">{error}</p>}
-                                <button onClick={handleSendCode} disabled={loading} className="...">
-                                    {loading ? "Sending code..." : "Send verification code"}
-                                </button>
-                                </div>
-                            </>
-)}
-
-                            {step === 2 && (
-                                <>
-                                    <p className="text-sm text-gray-600">Enter the 6-digit code sent to {email}</p>
-                                    <input
-                                        type="text"
-                                        inputMode="numeric"
-                                        maxLength={6}
-                                        value={code}
-                                        onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                                        className="w-full border rounded-lg px-3 py-2 text-center tracking-widest"
-                                    />
-                                    {error && <p className="text-red-600 text-sm">{error}</p>}
-                                    <button onClick={handleVerifyAndRegister} disabled={loading || code.length !== 6} className="...">
-                                        {loading ? "Verifying..." : "Verify & Register"}
-                                    </button>
-                                </>
-                            )}
-
-                            <p>Already have an account? Login <Link to="/CandidateLogin" className="underline">here</Link></p>
-
-                       
+                        <p>Already have an account? Login <Link to="/CandidateLogin" className="underline">here</Link></p>
+                    </div>
 
                 </div>
             </main>
