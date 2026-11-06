@@ -71,8 +71,8 @@ async function createCandidate({ name, email, password }) {
       VALUES (
           ${name},
           ${encryptedEmail},
-          ${emailLookup},
-          ${passwordHash}
+          ${passwordHash},
+          ${emailLookup}
       )
       RETURNING id, full_name
   `;
@@ -105,8 +105,8 @@ async function candidateLogin(email, password) {
   return {
       ...candidate,
       email: decrypt(candidate.email),
-      email_lookup: undefined,
-      passwd: undefined
+      passwd: undefined,
+      email_lookup: undefined
   };
 }
 
