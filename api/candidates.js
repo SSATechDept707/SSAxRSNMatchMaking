@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
-import { encrypt, decrypt } from "./lib/crypto.js";
+import { encrypt, decrypt, hashEmail } from "./lib/crypto.js";
 const sql = neon(process.env.DATABASE_URL);
 
 
@@ -58,23 +58,37 @@ export default async function handler(req, res) {
 }
 
 //encryption needed
-async function createCandidate({ name, email, password }) {
-  const passwowrdHash = await bcrypt.hash(password, 10);
-  const encryptedEmail = encrypt(email);
 
-  const rows = await sql` 
-INSERT INTO candidates (full_name, email, passwd)
-VALUES (${name}, ${encryptedEmail}, ${passwowrdHash})
-RETURNING id, full_name
-`;
+async function createCandidate({ name, email, password }) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  const encryptedEmail = encrypt(normalizedEmail);
+  const emailLookup = hashEmail(normalizedEmail);
+
+  const rows = await sql`
+      INSERT INTO candidates (full_name, email, email_lookup, passwd)
+      VALUES (
+          ${name},
+          ${encryptedEmail},
+          ${emailLookup},
+          ${passwordHash}
+      )
+      RETURNING id, full_name
+  `;
+
   return rows[0];
 }
 
 //login
+
 async function candidateLogin(email, password) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const emailLookup = hashEmail(normalizedEmail);
+
   const rows = await sql`
       SELECT * FROM candidates
-      WHERE email = ${encrypt(email)}
+      WHERE email_lookup = ${emailLookup}
   `;
 
   if (!rows[0]) return null;
@@ -82,16 +96,17 @@ async function candidateLogin(email, password) {
   const candidate = rows[0];
 
   const validPassword = await bcrypt.compare(
-    password,
-    candidate.passwd
+      password,
+      candidate.passwd
   );
 
   if (!validPassword) return null;
 
   return {
-    ...candidate,
-    email: decrypt(candidate.email),
-    passwd: undefined
+      ...candidate,
+      email: decrypt(candidate.email),
+      email_lookup: undefined,
+      passwd: undefined
   };
 }
 
