@@ -5,6 +5,7 @@ import CandidateLogin from "./login&Register/CandidateLogin";
 import MemberLogin from "./login&Register/MemberLogin";
 import CandidateRegister from "./login&Register/CandidateRegister";
 import MemberRegister from "./login&Register/MemberRegister"
+import MemberHome from "./Members/Homepage";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Route path="/CandidateRegister" element={<CandidateRegister />} />
       <Route path="/MemberLogin" element={<MemberLogin />} />
       <Route path="/MemberRegister" element={<MemberRegister />} />
+      <Route path="/Homepage" element={<MemberHome />} />
     </Routes>
   );
 }
