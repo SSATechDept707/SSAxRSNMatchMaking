@@ -15,7 +15,7 @@ export default function Homepage() {
     return (
         <div className="min-h-screen w-full flex flex-col bg-[#262261] text-white">
             {/* Header: logo left, greeting right */}
-            <header className="flex items-start justify-between px-[clamp(1.5rem,5vw,4.5rem)] pt-4">
+            <header className="flex items-start bg-white justify-between px-[clamp(1.5rem,5vw,4.5rem)] pt-4">
                 {/* use your white version of the logo here if you have one */}
                 <img
                     src="/images/SSA-logo.png"
