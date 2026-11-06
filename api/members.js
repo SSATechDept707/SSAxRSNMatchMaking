@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
     if (req.method !== "POST") return res.status(405).end();
     const sql = neon(process.env.DATABASE_URL);
     const { action, ...body } = req.body ?? {};
@@ -11,7 +11,7 @@ export default function handler(req, res) {
         case "registerCompany":
           return res.status(201).json(await registerCompany(sql, body));
         case "login":
-          return res.status(200).json(await getMember(sql, body));
+          return res.status(200).json(await memberLogin(sql, body));
         default:
           return res.status(400).json({ error: "Unknown action" });
       }

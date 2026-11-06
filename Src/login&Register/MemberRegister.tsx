@@ -96,7 +96,7 @@ export default function MemberRegister() {
                         <label className={labelClass}>Company name</label>
                         <input type="text" value={form.companyName} onChange={update("companyName")} className={inputClass} />
 
-                        <label className={labelClass}>Location</label>
+                        <label className={labelClass}>Country</label>
                         <input type="text" value={form.location} onChange={update("location")} className={inputClass} />
 
                         <p className="text-left text-sm font-bold text-[#262261] mt-3">Company representative</p>
