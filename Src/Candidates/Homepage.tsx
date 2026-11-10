@@ -96,7 +96,7 @@ export default function CandidateHome() {
                     className="h-[48px] w-auto object-contain"
                 />
                 <div className="flex items-start gap-4">
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col text-black items-center gap-1">
                         <span className="text-xs font-semibold">hello, {firstName}!</span>
                         <button type="button" onClick={logout} className="text-[11px] underline text-white/70">
                             Log out
