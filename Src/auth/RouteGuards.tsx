@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth, type ROle } from "./AuthContext";
+import { useAuth, type Role } from "./AuthContext";
 
 
 const HOME: Record<Role, string> = {
