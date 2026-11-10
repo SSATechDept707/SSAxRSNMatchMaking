@@ -12,15 +12,21 @@ import MemberHome from "./Members/Homepage";
 
 export default function App() {
   return (
-    <AuthProvider>
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/CandidateLogin" element={<CandidateLogin />} />
-      <Route path="/CandidateRegister" element={<CandidateRegister />} />
-      <Route path="/MemberLogin" element={<MemberLogin />} />
-      <Route path="/MemberRegister" element={<MemberRegister />} />
-      <Route path="/Members/Homepage" element={<MemberHome />} />
-    </Routes>
-    </AuthProvider>
+      <AuthProvider>
+          <Routes>
+              <Route path="/" element={<LandingPage />} />
+
+              <Route element={<PublicOnly />}>
+                  <Route path="/CandidateLogin" element={<CandidateLogin />} />
+                  <Route path="/CandidateRegister" element={<CandidateRegister />} />
+                  <Route path="/MemberLogin" element={<MemberLogin />} />
+                  <Route path="/MemberRegister" element={<MemberRegister />} />
+              </Route>
+
+              <Route element={<RequireRole role="member" />}>
+                  <Route path="/Homepage" element={<MemberHome />} />
+              </Route>
+          </Routes>
+      </AuthProvider>
   );
 }

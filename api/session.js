@@ -1,4 +1,4 @@
-import { getSession, clearSession} from "./lib/session";
+import { getSession, clearSession } from "./lib/session.js";
 
 export default function handler(req, res) {
 

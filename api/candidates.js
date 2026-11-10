@@ -50,6 +50,75 @@ export default async function handler(req, res) {
     });
   }
 }
+//encryption needed
+
+async function createCandidate({ name, email, password }) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  const encryptedEmail = encrypt(normalizedEmail);
+  const emailLookup = hashEmail(normalizedEmail);
+
+  const rows = await sql`
+      INSERT INTO candidates (full_name, email, passwd, email_lookup)
+      VALUES (
+          ${name},
+          ${encryptedEmail},
+          ${passwordHash},
+          ${emailLookup}
+      )
+      RETURNING id, full_name
+  `;
+
+  return rows[0];
+}
+
+//login
+
+async function candidateLogin(email, password) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const emailLookup = hashEmail(normalizedEmail);
+
+  const rows = await sql`
+      SELECT * FROM candidates
+      WHERE email_lookup = ${emailLookup}
+  `;
+  console.log("rows found:", rows.length);
+  if (!rows[0]) return null;
+
+  const candidate = rows[0];
+
+  const validPassword = await bcrypt.compare(
+      password,
+      candidate.passwd
+  );
+  console.log("password valid:", validPassword);
+  if (!validPassword) return null;
+
+  return {
+      ...candidate,
+      email: decrypt(candidate.email),
+      passwd: undefined,
+      email_lookup: undefined
+  };
+}
+
+//view profile
+async function getCandidateById(id) {
+  const rows = await sql`
+      SELECT * FROM candidates
+      WHERE id = ${id}
+  `;
+
+  if (!rows[0]) return null;
+
+  return {
+    ...rows[0],
+    email: decrypt(rows[0].email),
+    passwd: undefined
+  };
+}
+
 function updateCandidate() {
 
 }
