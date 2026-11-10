@@ -9,24 +9,29 @@ import MemberLogin from "./login&Register/MemberLogin";
 import CandidateRegister from "./login&Register/CandidateRegister";
 import MemberRegister from "./login&Register/MemberRegister"
 import MemberHome from "./Members/Homepage";
+import CandidateHome from "./Candidates/Homepage";
+
 
 export default function App() {
   return (
-      <AuthProvider>
-          <Routes>
-              <Route path="/" element={<LandingPage />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
 
-              <Route element={<PublicOnly />}>
-                  <Route path="/CandidateLogin" element={<CandidateLogin />} />
-                  <Route path="/CandidateRegister" element={<CandidateRegister />} />
-                  <Route path="/MemberLogin" element={<MemberLogin />} />
-                  <Route path="/MemberRegister" element={<MemberRegister />} />
-              </Route>
+        <Route element={<PublicOnly />}>
+          <Route path="/CandidateLogin" element={<CandidateLogin />} />
+          <Route path="/CandidateRegister" element={<CandidateRegister />} />
+          <Route path="/MemberLogin" element={<MemberLogin />} />
+          <Route path="/MemberRegister" element={<MemberRegister />} />
+        </Route>
+        <Route element={<RequireRole role="candidate" />}>
+          <Route path="/Candidates/Homepage" element={<CandidateHome />} />
+        </Route>
 
-              <Route element={<RequireRole role="member" />}>
-                  <Route path="/Members/Homepage" element={<MemberHome />} />
-              </Route>
-          </Routes>
-      </AuthProvider>
+        <Route element={<RequireRole role="member" />}>
+          <Route path="/Members/Homepage" element={<MemberHome />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
