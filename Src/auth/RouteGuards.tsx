@@ -7,10 +7,6 @@ const HOME: Record<Role, string> = {
  //   candidate: "/Candidates/Homepage"
 }
 
-const LOGIN: Record<Role, string> = {
-    member: "/MemberLogin",
-    candidate: "/CandidateLogin"
-}
 function LoadingScreen() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#262261] text-white/70">
@@ -35,11 +31,7 @@ export function PublicOnly() {
 export function RequireRole({ role: required }: { role: Role }) {
     const { role, loading } = useAuth();
     if (loading) return <LoadingScreen />;
-    if (!role) {
-        const target = LOGIN[required];
-        if (!target) console.error("RequireRole: no LOGIN path for", required);
-        return <Navigate to={target ?? "/"} replace />;
-    }
+  
     if (role !== required) {
         const target = HOME[role];
         if (!target) console.error("RequireRole: no HOME path for role", role);
