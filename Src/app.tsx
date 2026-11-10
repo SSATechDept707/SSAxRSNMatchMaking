@@ -10,7 +10,7 @@ import CandidateRegister from "./login&Register/CandidateRegister";
 import MemberRegister from "./login&Register/MemberRegister"
 import MemberHome from "./Members/Homepage";
 import CandidateHome from "./Candidates/Homepage";
-import AdminDashboard from "/Admin/Dashboard";
+import AdminDashboard from "./Admin/Dashboard";
 
 
 export default function App() {
