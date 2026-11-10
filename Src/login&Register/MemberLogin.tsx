@@ -10,6 +10,16 @@ export default function MemberLogin() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    async function tryLogin(url: string) {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "login", email: email.trim(), password }),
+        });
+        const data = await res.json().catch(() => ({}));
+        return { ok: res.ok, status: res.status, data };
+    }
+    
     async function handleLogin() {
         setError("");
         if (!email.trim() || !password) {
@@ -19,20 +29,29 @@ export default function MemberLogin() {
     
         setLoading(true);
         try {
-            const res = await fetch("/api/members", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ action: "login", email: email.trim(), password }),
-            });
-            const data = await res.json();
-    
-            if (!res.ok) {
-                setError(data.error || "Login failed");
+            // 1) try a member login
+            const member = await tryLogin("/api/members");
+            if (member.ok) {
+                setRole("member");
+                navigate("/Members/Homepage", { replace: true });
+                return;
+            }
+            // anything other than "no match" (e.g. 403 pending approval, 500) is shown as-is
+            if (member.status !== 401) {
+                setError(member.data.error || "Login failed");
                 return;
             }
     
-            setRole("member");
-            navigate("/Members/Homepage", { replace: true });
+            // 2) no member matched, so try an admin login
+            const admin = await tryLogin("/api/admin");
+            if (admin.ok) {
+                setRole("admin");
+                navigate("/Admin/Dashboard", { replace: true });
+                return;
+            }
+    
+            // neither matched: one generic message, so it doesn't reveal which side exists
+            setError("Invalid email or password");
         } catch {
             setError("Network error, please try again");
         } finally {
