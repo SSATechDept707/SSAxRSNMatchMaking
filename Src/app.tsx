@@ -1,4 +1,7 @@
 import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./auth/AuthContext";
+import { publicOnly, RequireRole } from "./auth/RouteGuards";
+
 
 import LandingPage from "./login&Register/LandingPage";
 import CandidateLogin from "./login&Register/CandidateLogin";
@@ -9,6 +12,7 @@ import MemberHome from "./Members/Homepage";
 
 export default function App() {
   return (
+    <AuthProvider>
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/CandidateLogin" element={<CandidateLogin />} />
@@ -17,5 +21,6 @@ export default function App() {
       <Route path="/MemberRegister" element={<MemberRegister />} />
       <Route path="/Members/Homepage" element={<MemberHome />} />
     </Routes>
+    </AuthProvider>
   );
 }

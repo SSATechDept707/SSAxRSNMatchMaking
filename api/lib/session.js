@@ -8,10 +8,10 @@ function serialize(value, maxAge) {
     return [
         `${COOKIE}=${value}`,
         "Path=/",
-        "HttpOnly",          // JS can't read it
+        "HttpOnly",         
         "SameSite=Lax",      // not sent on cross-site POST/PATCH/DELETE
         `Max-Age=${maxAge}`,
-        isProd ? "Secure" : "", // https only (skipped on local http)
+        isProd ? "Secure" : "",
     ].filter(Boolean).join("; ");
 }
 

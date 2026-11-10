@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
+import { setSession } from "./lib/session";
 
 export default async function handler(req, res) {
     if (req.method !== "POST") return res.status(405).end();
@@ -11,7 +12,9 @@ export default async function handler(req, res) {
         case "registerCompany":
           return res.status(201).json(await registerCompany(sql, body));
         case "login":
-          return res.status(200).json(await memberLogin(sql, body));
+          const member = await memberLogin(sql, body);
+          setSession(res, { role: "member", companyId: member.company_id, accountId: member.id });
+          return res.status(200).json(member);
         default:
           return res.status(400).json({ error: "Unknown action" });
       }

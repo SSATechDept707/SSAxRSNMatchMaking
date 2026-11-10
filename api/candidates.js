@@ -1,6 +1,8 @@
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
 import { encrypt, decrypt, hashEmail } from "./lib/crypto.js";
+import { setSession } from "./lib/session";
+
 const sql = neon(process.env.DATABASE_URL);
 
 
@@ -16,7 +18,7 @@ export default async function handler(req, res) {
         const { email, password } = req.body;
 
         const candidate = await candidateLogin(email, password);
-
+        setSession(res, { role: "candidate", accountId: candidate.id });
         if (!candidate) {
           return res.status(401).json({
             error: "Invalid email or password"
@@ -34,8 +36,9 @@ export default async function handler(req, res) {
 
     // Retrieve candidate profile by ID
     if (req.method === "GET") {
-      const candidate = await getCandidateById(req.query.id);
-
+      const { candidateId } = requireSession(req, "candidate");
+      const candidate = await getCandidateById(candidateId);
+    
       if (!candidate) {
         return res.status(404).json({
           error: "Candidate not found"
