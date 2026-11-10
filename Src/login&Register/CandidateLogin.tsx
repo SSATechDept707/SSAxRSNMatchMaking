@@ -32,7 +32,7 @@ export default function CandidateLogin() {
                 setError(data.error || "Invalid email or password");
                 return;
             }
-       setRole("Candidate");
+       setRole("candidate");
             navigate("/Candidates/Homepage", { replace: true });
     
         } catch {
