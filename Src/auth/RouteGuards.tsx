@@ -1,10 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { Loader } from "lucide-react";
 import { useAuth, type Role } from "./AuthContext";
 
 
 const HOME: Record<Role, string> = {
     member: "/Members/Homepage",
-    candidate: "/Candidates/Homepage"
+    candidate: "/Candidates/Homepage",
+    admin: "Admin/Dashboard"    
 }
 
 function LoadingScreen() {

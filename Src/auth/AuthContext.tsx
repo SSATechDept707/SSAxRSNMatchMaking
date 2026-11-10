@@ -1,6 +1,6 @@
 import {  createContext, useContext, useEffect, useState } from "react";
 
-export type Role = "member" | "candidate";
+export type Role = "member" | "candidate" | "admin";
 
 type AuthState = {
      role: Role | null;
