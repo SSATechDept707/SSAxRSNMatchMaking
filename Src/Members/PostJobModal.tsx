@@ -62,7 +62,12 @@ function TagInput({ label, tags, onChange }: TagInputProps) {
     );
 }
 
-export default function PostJobModal({ onClose }: { onClose: () => void }) {
+type PostJobModalProps = {
+    onClose: () => void;
+    onPosted: () => void; // called after the posting is saved, so the list can reload
+};
+
+export default function PostJobModal({ onClose, onPosted }: PostJobModalProps) {
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -73,6 +78,7 @@ export default function PostJobModal({ onClose }: { onClose: () => void }) {
     const [softSkills, setSoftSkills] = useState<string[]>([]);
     const [techSkills, setTechSkills] = useState<string[]>([]);
     const [error, setError] = useState("");
+    const [saving, setSaving] = useState(false);
 
     // today's date as YYYY-MM-DD in the user's local timezone
     const today = new Date().toLocaleDateString("en-CA");
@@ -91,7 +97,7 @@ export default function PostJobModal({ onClose }: { onClose: () => void }) {
             setForm((f) => ({ ...f, [field]: e.target.value }));
     }
 
-    function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError("");
 
@@ -112,7 +118,6 @@ export default function PostJobModal({ onClose }: { onClose: () => void }) {
         }
 
         const payload = {
-            action: "createJob",
             title: title.trim(),
             description: description.trim(),
             payRange: payRange.trim(),
@@ -122,9 +127,27 @@ export default function PostJobModal({ onClose }: { onClose: () => void }) {
             closingDate: `${closingDate}T23:59:59+08:00`, // end of the closing day
         };
 
-        console.log(payload);
-        // TODO: POST to the jobs API, then refresh the job list
-        onClose();
+        setSaving(true);
+        try {
+            const res = await fetch("/api/jobs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                setError(data.error || "Couldn't save the posting");
+                return;
+            }
+
+            onPosted();
+            onClose();
+        } catch {
+            setError("Network error, please try again");
+        } finally {
+            setSaving(false);
+        }
     }
 
     return (
@@ -206,9 +229,10 @@ export default function PostJobModal({ onClose }: { onClose: () => void }) {
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                            disabled={saving}
+                            className="flex-1 bg-[#262261] hover:bg-[#393481] disabled:opacity-60 text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                         >
-                            Post job
+                            {saving ? "Posting..." : "Post job"}
                         </button>
                     </div>
                 </div>
