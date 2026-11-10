@@ -29,7 +29,7 @@ export default function Homepage() {
             const res = await fetch("/api/jobPostings?mine=true");
             // session expired: clearing the role makes the route guard send them to login
             if (res.status === 401) {
-                setRole(null);
+               // setRole(null);
                 return;
             }
             if (!res.ok) throw new Error("request failed");
