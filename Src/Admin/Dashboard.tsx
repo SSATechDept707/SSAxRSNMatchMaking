@@ -62,7 +62,7 @@ export default function Dashboard() {
 
                 {/* content area */}
                 <main className="flex-1 bg-gray-100 p-8 overflow-y-auto">
-                    <h1 className="text-2xl font-bold text-[#4B5563] mb-4">{TITLES[section]}</h1>
+                <h1>{NAV.find((n) => n.key === section)?.label ?? "Add an admin"}</h1>
                     <p className="text-gray-500">Work in progress</p>
                 </main>
             </div>
