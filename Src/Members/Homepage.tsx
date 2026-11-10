@@ -42,7 +42,7 @@ export default function Homepage() {
 
     useEffect(() => {
         loadPostings();
-    }, [loadPostings]);
+    }, [loadPostings, setRole]);
 
     const tabClass = (t: Tab) =>
         `text-[clamp(16px,1.6vw,22px)] font-semibold transition-opacity ${
