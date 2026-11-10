@@ -39,7 +39,7 @@ export default function CandidateHome() {
         async function load() {
             try {
                 const [jobsRes, meRes] = await Promise.all([
-                    fetch("/api/jobs"),
+                    fetch("/api/jobPostings"),
                     fetch("/api/candidates"),
                 ]);
 
