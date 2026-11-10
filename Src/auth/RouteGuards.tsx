@@ -8,8 +8,8 @@ const HOME: Record<Role, string> = {
 }
 
 const LOGIN: Record<Role, string> = {
-    member: "/login&Register/MemberLogin",
-    candidate: "/login&Register/CandidateLogin"
+    member: "/MemberLogin",
+    candidate: "/CandidateLogin"
 }
 
 function LoadingScreen() {
