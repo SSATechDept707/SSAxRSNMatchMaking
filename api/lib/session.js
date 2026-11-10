@@ -16,7 +16,7 @@ function serialize(value, maxAge) {
 }
 
 export function setSession(res, payload) {
-    const token = jwt.sign(payload, process.env.SESSION_SECRET, { expiresIn: MAX_AGE });
+    const token = jwt.sign(payload, process.env.SESSION_SECRET_KEY, { expiresIn: MAX_AGE });
     res.setHeader("Set-Cookie", serialize(token, MAX_AGE));
 }
 
@@ -30,7 +30,7 @@ export function getSession(req) {
     const found = raw.split(";").map((s) => s.trim()).find((s) => s.startsWith(`${COOKIE}=`));
     if (!found) return null;
     try {
-        return jwt.verify(found.slice(COOKIE.length + 1), process.env.SESSION_SECRET, {
+        return jwt.verify(found.slice(COOKIE.length + 1), process.env.SESSION_SECRET_KEY, {
             algorithms: ["HS256"],
         });
     } catch {
