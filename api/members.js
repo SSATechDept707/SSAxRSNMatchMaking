@@ -11,10 +11,15 @@ export default async function handler(req, res) {
       switch (action) {
         case "registerCompany":
           return res.status(201).json(await registerCompany(sql, body));
-        case "login":
-          const member = await memberLogin(sql, body);
-          setSession(res, { role: "member", companyId: member.company_id, accountId: member.id });
-          return res.status(200).json(member);
+          case "login": {
+            const member = await memberLogin(sql, body);
+            setSession(res, {
+                role: "member",
+                companyId: member.company_id,
+                accountId: member.id,
+            });
+            return res.status(200).json(member);
+        }
         default:
           return res.status(400).json({ error: "Unknown action" });
       }
