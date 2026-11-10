@@ -1,12 +1,44 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useAuth } from "../auth/AuthContext";
 
 export default function MemberLogin() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { setRole } = useAuth();
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
+    async function handleLogin() {
+        setError("");
+        if (!email.trim() || !password) {
+            setError("Please enter your email and password");
+            return;
+        }
+    
+        setLoading(true);
+        try {
+            const res = await fetch("/api/members", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "login", email: email.trim(), password }),
+            });
+            const data = await res.json();
+    
+            if (!res.ok) {
+                setError(data.error || "Login failed");
+                return;
+            }
+    
+            setRole("member");
+            navigate("/Members/Homepage", { replace: true });
+        } catch {
+            setError("Network error, please try again");
+        } finally {
+            setLoading(false);
+        }
+    }
     return (
         <div className="min-h-screen w-full flex flex-col">
 
@@ -64,14 +96,15 @@ export default function MemberLogin() {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
+{error && <p className="text-red-600 text-sm">{error}</p>}
 
-
-                        <button
-                            onClick={() => navigate("/Members/Homepage")}
-                            className="w-full bg-[#262261] hover:bg-[#393481] text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
-                        >
-                            Login
-                        </button>
+<button
+    onClick={handleLogin}
+    disabled={loading}
+    className="w-full bg-[#262261] hover:bg-[#393481] disabled:opacity-60 text-white py-[clamp(0.6rem,1vw,0.85rem)] rounded-xl text-[clamp(14px,1.3vw,18px)] transition-all duration-200 hover:-translate-y-0.5"
+>
+    {loading ? "Logging in..." : "Login"}
+</button>
 
                         <p>Don't have an account? Register <Link to="/MemberRegister" className="underline">here</Link></p>
 

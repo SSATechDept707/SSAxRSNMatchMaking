@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useAuth } from "../auth/AuthContext";
 
 export default function CandidateLogin() {
     const navigate = useNavigate();
@@ -8,6 +8,8 @@ export default function CandidateLogin() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const { setRole } = useAuth();
+
 
     async function handleLogin() {
         setError("");
@@ -30,8 +32,8 @@ export default function CandidateLogin() {
                 setError(data.error || "Invalid email or password");
                 return;
             }
-    
-            navigate("/Candidates/Homepage");
+       setRole("Candidate");
+            navigate("/Candidates/Homepage", { replace: true });
     
         } catch {
             setError("Network error, please try again");
