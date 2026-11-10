@@ -89,21 +89,14 @@ export default function CandidateHome() {
     return (
         <div className="min-h-screen w-full bg-[#262261] text-white pb-12">
             {/* header: logo left, profile button + greeting right */}
-            <header className="flex items-start justify-between px-[clamp(1.5rem,5vw,4.5rem)] pt-4">
+            <header className="h-[60px] pl-4 shrink-0 bg-white flex items-center px-6 z-10">
                 <img
                     src="/images/SSA-logo.png"
                     alt="Singapore Shipping Association"
                     className="h-[48px] w-auto object-contain"
                 />
                 <div className="flex items-start gap-4">
-                    <button
-                        type="button"
-                        className="bg-white text-[#ef6461] rounded-full px-5 py-2 text-sm font-medium"
-                    >
-                        Set up profile !
-                    </button>
                     <div className="flex flex-col items-center gap-1">
-                        <div className="h-[60px] w-[60px] rounded-full bg-white" />
                         <span className="text-xs font-semibold">hello, {firstName}!</span>
                         <button type="button" onClick={logout} className="text-[11px] underline text-white/70">
                             Log out
