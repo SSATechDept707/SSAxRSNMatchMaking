@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { setSession } from "./lib/session.js";
+import { encrypt, decrypt, hashEmail } from "./lib/crypto.js";
 import bcrypt from "bcryptjs";
 
 export default  async function handler(req, res) {
@@ -9,7 +10,7 @@ export default  async function handler(req, res) {
         switch(action) {
             case "login":
                 {const admin = await loginAdmin(sql, body);
-                setSession(res, { role: "Admin", accountId: admin.id });
+                setSession(res, { role: "admin", adminId: admin.id, adminRole: admin.role });
                 return res.status(200).json(admin);}
 
            default:

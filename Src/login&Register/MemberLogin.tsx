@@ -6,7 +6,7 @@ export default function MemberLogin() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { setRole } = useAuth();
+    const { setRole, setAdminRole } = useAuth();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -46,6 +46,7 @@ export default function MemberLogin() {
             const admin = await tryLogin("/api/admin");
             if (admin.ok) {
                 setRole("admin");
+                setAdminRole(admin.data.role ?? mull);
                 navigate("/Admin/Dashboard", { replace: true });
                 return;
             }

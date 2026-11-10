@@ -1,12 +1,13 @@
-import {  createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export type Role = "member" | "candidate" | "admin";
 
 type AuthState = {
-     role: Role | null;
-     loading: boolean;
-     setRole: (role: Role | null) => void;
-     logout: () => Promise<void>;
+    role: Role | null;
+    loading: boolean;
+    setRole: (role: Role | null) => void;
+    setAdminRole: (r: string | null) => void;
+    logout: () => Promise<void>;
 };
 
 const MIN_LOADING_MS = 2000;
@@ -16,13 +17,17 @@ const AuthContext = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [role, setRole] = useState<Role | null>(null);
     const [loading, setLoading] = useState(true);
+    const [adminRole, setAdminRole] = useState<string | null>(null);
 
     // runs once when the app first loads: ask the server who we are
     useEffect(() => {
         const wait = new Promise((resolve) => setTimeout(resolve, MIN_LOADING_MS));
         const check = fetch("/api/session")
             .then((res) => (res.ok ? res.json() : null))
-            .then((data) => setRole(data?.role ?? null))
+            .then((data) => {
+                setRole(data?.role ?? null);
+                setAdminRole(data?.adminRole ?? null);
+            })
             .catch(() => setRole(null));
         Promise.all([check, wait]).then(() => setLoading(false));
     }, []);
@@ -30,10 +35,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function logout() {
         await fetch("/api/session", { method: "DELETE" });
         setRole(null);
+        setAdminRole(null);
     }
 
     return (
-        <AuthContext.Provider value={{ role, loading, setRole, logout }}>
+        <AuthContext.Provider value={{ role, adminRole, loading, setRole, setAdminRole, logout }}>
             {children}
         </AuthContext.Provider>
     );
