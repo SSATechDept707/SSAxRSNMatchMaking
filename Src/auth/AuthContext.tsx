@@ -6,6 +6,7 @@ type AuthState = {
     role: Role | null;
     loading: boolean;
     setRole: (role: Role | null) => void;
+    adminRole: string | null;
     setAdminRole: (r: string | null) => void;
     logout: () => Promise<void>;
 };
