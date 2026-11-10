@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
-import { publicOnly, RequireRole } from "./auth/RouteGuards";
+import { PublicOnly, RequireRole } from "./auth/RouteGuards";
 
 
 import LandingPage from "./login&Register/LandingPage";
