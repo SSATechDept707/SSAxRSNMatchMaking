@@ -1,139 +1,231 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
-import PostJobModal from "./PostJobModal";
 
-type Tab = "jobs" | "applicants";
+const VERIFIED = "verified"; // the value your admin sets when approving a candidate
 
-type Posting = {
+type Job = {
     id: number;
     title: string;
+    description: string;
     pay_range: string;
+    soft_skills: string[] | null;
+    tech_skills: string[] | null;
     avail_opening: number;
     closing_date: string;
-    posting_status: string;
+    created_at: string;
+    company_name: string;
+    logo_url: string | null;
+};
+
+type Profile = {
+    full_name: string;
+    verification_status: string | null;
 };
 
 // dd/mm/yyyy in Singapore time
 const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-GB", { timeZone: "Asia/Singapore" });
 
-export default function Homepage() {
+export default function CandidateHome() {
     const { setRole, logout } = useAuth();
-    const [showForm, setShowForm] = useState(false);
-    const [tab, setTab] = useState<Tab>("jobs");
-    const [postings, setPostings] = useState<Posting[]>([]);
+    const [jobs, setJobs] = useState<Job[]>([]);
+    const [profile, setProfile] = useState<Profile | null>(null);
     const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
-
-    const loadPostings = useCallback(async () => {
-        try {
-            const res = await fetch("/api/jobs?mine=true");
-            // session expired: clearing the role makes the route guard send them to login
-            if (res.status === 401) {
-                setRole(null);
-                return;
-            }
-            if (!res.ok) throw new Error("request failed");
-            setPostings(await res.json());
-            setLoadState("ready");
-        } catch {
-            setLoadState("error");
-        }
-    }, [setRole]);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
-        loadPostings();
-    }, [loadPostings]);
+        let cancelled = false;
 
-    const tabClass = (t: Tab) =>
-        `text-[clamp(16px,1.6vw,22px)] font-semibold transition-opacity ${
-            tab === t ? "text-white" : "text-white/60 hover:text-white/90"
-        }`;
+        async function load() {
+            try {
+                const [jobsRes, meRes] = await Promise.all([
+                    fetch("/api/jobPostings"),
+                    fetch("/api/candidates"),
+                ]);
+
+                // session expired: clearing the role makes the route guard send them to login
+                if (meRes.status === 401) {
+                    setRole(null);
+                    return;
+                }
+                if (!jobsRes.ok) throw new Error("jobs request failed");
+
+                const jobsData: Job[] = await jobsRes.json();
+                const meData: Profile | null = meRes.ok ? await meRes.json() : null;
+
+                if (!cancelled) {
+                    setJobs(jobsData);
+                    setProfile(meData);
+                    setLoadState("ready");
+                }
+            } catch {
+                if (!cancelled) setLoadState("error");
+            }
+        }
+
+        load();
+        return () => {
+            cancelled = true;
+        };
+    }, [setRole]);
+
+    const isVerified = profile?.verification_status === VERIFIED;
+    const firstName = profile?.full_name?.split(" ")[0] ?? "there";
+
+    const q = search.trim().toLowerCase();
+    const shown = jobs.filter(
+        (j) =>
+            !q ||
+            [j.title, j.company_name, ...(j.tech_skills ?? []), ...(j.soft_skills ?? [])].some((s) =>
+                s.toLowerCase().includes(q)
+            )
+    );
+
+    function handleSubmitCv(job: Job) {
+        // TODO: open the CV upload, then POST to the applications API
+        console.log("submit CV for job", job.id);
+    }
 
     return (
-        <div className="min-h-screen w-full flex flex-col bg-[#262261] text-white">
-            {/* Header: logo left, greeting right */}
-            <header className="flex items-start bg-white justify-between px-[clamp(1.5rem,5vw,4.5rem)] py-3">
+        <div className="min-h-screen w-full bg-[#262261] text-white pb-12">
+            {/* header: logo left, profile button + greeting right */}
+            <header className="h-[60px] pl-4 shrink-0 bg-white flex items-center px-6 z-10">
                 <img
                     src="/images/SSA-logo.png"
                     alt="Singapore Shipping Association"
                     className="h-[48px] w-auto object-contain"
                 />
-                <div className="flex flex-col items-center gap-1 text-gray-700">
-                    <div className="h-[60px] w-[60px] rounded-full bg-gray-200" />
-                    <span className="text-xs font-semibold">Hello, user</span>
-                    <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
-                        Log out
-                    </button>
+                <div className="flex items-start gap-4">
+                    <div className="flex flex-col text-black items-center gap-1">
+                        <span className="text-xs font-semibold">hello, {firstName}!</span>
+                        <button type="button" onClick={logout} className="text-[11px] underline text-white/70">
+                            Log out
+                        </button>
+                    </div>
                 </div>
             </header>
 
-            {/* Tabs */}
-            <nav className="flex items-center gap-3 px-[clamp(1.5rem,5vw,4.5rem)] mt-6">
-                <button onClick={() => setTab("jobs")} className={tabClass("jobs")}>
-                    Jobs Posted
-                </button>
-                <span className="text-white/60">|</span>
-                <button onClick={() => setTab("applicants")} className={tabClass("applicants")}>
-                    View applicants
-                </button>
-            </nav>
+            <main className="px-[clamp(1.5rem,5vw,4.5rem)] mt-4">
+                <h1 className="text-[clamp(22px,2.4vw,32px)] font-medium">Available Positions</h1>
 
-            {/* Add posting button (jobs tab only) */}
-            {tab === "jobs" && (
-                <div className="px-[clamp(1.5rem,5vw,4.5rem)] mt-4">
-                    <button
-                        onClick={() => setShowForm(true)}
-                        className="bg-[#5048c9] hover:bg-[#6058d9] text-white text-lg rounded-2xl px-6 py-3 transition-colors"
-                    >
-                        + Add posting
+                {/* search + filter */}
+                <div className="flex items-center gap-4 mt-4 max-w-[760px]">
+                    <div className="relative flex-1">
+                        <svg
+                            className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                        >
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="M21 21l-4.3-4.3" />
+                        </svg>
+                        <input
+                            type="search"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search"
+                            className="w-full rounded-full bg-gray-200 text-gray-700 pl-10 pr-4 py-2 outline-none"
+                        />
+                    </div>
+                    <button type="button" aria-label="Filter" className="text-white">
+                        {/* TODO: decide what to filter by */}
+                        <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 4h18l-7 8v6l-4 2v-8L3 4z" />
+                        </svg>
                     </button>
                 </div>
-            )}
 
-            {/* Content area */}
-            <main className="flex-1 px-[clamp(1.5rem,5vw,4.5rem)] py-6">
-                {tab === "applicants" && (
-                    <p className="text-white/50 text-xl text-center mt-24">Applicants will appear here</p>
+                {/* verification notice */}
+                {loadState === "ready" && !isVerified && (
+                    <div className="mt-6 max-w-[760px] rounded-xl bg-amber-100 text-amber-900 px-4 py-3 text-sm">
+                        Your account is waiting for verification by an admin. You can browse positions, but you
+                        can't submit a CV yet.
+                    </div>
                 )}
 
-                {tab === "jobs" && loadState === "loading" && <p className="text-white/60">Loading...</p>}
-                {tab === "jobs" && loadState === "error" && (
-                    <p className="text-white/60">Couldn't load your postings. Please refresh the page.</p>
-                )}
-                {tab === "jobs" && loadState === "ready" && postings.length === 0 && (
-                    <p className="text-white/50 text-xl text-center mt-24">Upload new jobs here!</p>
-                )}
-                {tab === "jobs" && loadState === "ready" && postings.length > 0 && (
-                    <ul className="flex flex-col gap-4 max-w-[900px]">
-                        {postings.map((p) => (
-                            <li
-                                key={p.id}
-                                className="bg-white/10 rounded-2xl px-5 py-4 flex flex-wrap items-center justify-between gap-3"
-                            >
-                                <div>
-                                    <h2 className="text-lg font-semibold">{p.title}</h2>
-                                    <p className="text-sm text-white/70">
-                                        {p.pay_range} · {p.avail_opening} opening{p.avail_opening === 1 ? "" : "s"} ·
-                                        Closes {formatDate(p.closing_date)}
-                                    </p>
-                                </div>
-                                <span
-                                    className={`text-xs font-semibold rounded-full px-3 py-1 ${
-                                        p.posting_status === "Open"
-                                            ? "bg-green-500/20 text-green-300"
-                                            : "bg-white/15 text-white/70"
-                                    }`}
-                                >
-                                    {p.posting_status}
-                                </span>
-                            </li>
-                        ))}
+                {/* job list */}
+                <div className="mt-6">
+                    {loadState === "loading" && <p className="text-white/60">Loading positions...</p>}
+                    {loadState === "error" && (
+                        <p className="text-white/60">Couldn't load positions. Please refresh the page.</p>
+                    )}
+                    {loadState === "ready" && shown.length === 0 && (
+                        <p className="text-white/60">
+                            {jobs.length === 0 ? "No open positions right now." : "No positions match your search."}
+                        </p>
+                    )}
+
+                    <ul className="flex flex-col gap-6">
+                        {shown.map((job) => {
+                            const skills = [...(job.tech_skills ?? []), ...(job.soft_skills ?? [])];
+                            return (
+                                <li key={job.id} className="flex flex-col md:flex-row md:items-center gap-4">
+                                    <article className="flex-1 bg-white text-gray-700 rounded-[2rem] px-6 py-5 flex gap-5">
+                                        {job.logo_url ? (
+                                            <img
+                                                src={job.logo_url}
+                                                alt={job.company_name}
+                                                className="h-[88px] w-[88px] rounded-full object-cover shrink-0"
+                                            />
+                                        ) : (
+                                            <div className="h-[88px] w-[88px] rounded-full bg-gray-200 shrink-0" />
+                                        )}
+
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+                                                <div className="flex flex-wrap items-baseline gap-x-4">
+                                                    <h2 className="text-lg font-bold">{job.title}</h2>
+                                                    <span className="text-sm">
+                                                        Closing Date: {formatDate(job.closing_date)}
+                                                    </span>
+                                                </div>
+                                                <span className="font-bold">{job.pay_range}</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500">{job.company_name}</p>
+
+                                            <p className="mt-2 text-sm whitespace-pre-line line-clamp-3">
+                                                {job.description}
+                                            </p>
+
+                                            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                                                <div className="flex flex-wrap gap-2">
+                                                    {skills.map((s) => (
+                                                        <span
+                                                            key={s}
+                                                            className="bg-[#c5d5cc] text-gray-700 rounded-full px-4 py-1 text-sm"
+                                                        >
+                                                            {s}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                                <span className="text-[11px] font-semibold text-green-600">
+                                                    ● Posted {formatDate(job.created_at)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </article>
+
+                                    <button
+                                        type="button"
+                                        disabled={!isVerified}
+                                        onClick={() => handleSubmitCv(job)}
+                                        title={isVerified ? undefined : "Your account must be verified first"}
+                                        className={`md:w-[170px] rounded-2xl py-4 text-lg transition-colors ${
+                                            isVerified
+                                                ? "bg-[#0e7490] hover:bg-[#0891b2] text-white"
+                                                : "bg-[#0f4f5f] text-white/40 cursor-not-allowed"
+                                        }`}
+                                    >
+                                        Submit CV
+                                    </button>
+                                </li>
+                            );
+                        })}
                     </ul>
-                )}
+                </div>
             </main>
-
-            {/* The popup form, only rendered while showForm is true */}
-            {showForm && <PostJobModal onClose={() => setShowForm(false)} onPosted={loadPostings} />}
         </div>
     );
 }
