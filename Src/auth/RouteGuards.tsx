@@ -11,7 +11,6 @@ const LOGIN: Record<Role, string> = {
     member: "/MemberLogin",
     candidate: "/CandidateLogin"
 }
-
 function LoadingScreen() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#262261] text-white/70">
@@ -24,7 +23,11 @@ function LoadingScreen() {
 export function PublicOnly() {
     const { role, loading } = useAuth();
     if (loading) return <LoadingScreen />;
-    if (role) return <Navigate to={HOME[role]} replace />;
+    if (role) {
+        const target = HOME[role];
+        if (!target) console.error("PublicOnly: no HOME path for role", role);
+        return <Navigate to={target ?? "/"} replace />;
+    }
     return <Outlet />;
 }
 
@@ -32,7 +35,15 @@ export function PublicOnly() {
 export function RequireRole({ role: required }: { role: Role }) {
     const { role, loading } = useAuth();
     if (loading) return <LoadingScreen />;
-    if (!role) return <Navigate to={LOGIN[required]} replace />;
-    if (role !== required) return <Navigate to={HOME[role]} replace />;
+    if (!role) {
+        const target = LOGIN[required];
+        if (!target) console.error("RequireRole: no LOGIN path for", required);
+        return <Navigate to={target ?? "/"} replace />;
+    }
+    if (role !== required) {
+        const target = HOME[role];
+        if (!target) console.error("RequireRole: no HOME path for role", role);
+        return <Navigate to={target ?? "/"} replace />;
+    }
     return <Outlet />;
 }
