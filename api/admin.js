@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { setSession } from "./lib/session.js";
 import bcrypt from "bcryptjs";
 
 export default  async function handler(req, res) {
