@@ -24,7 +24,7 @@ export default function App() {
               </Route>
 
               <Route element={<RequireRole role="member" />}>
-                  <Route path="/Homepage" element={<MemberHome />} />
+                  <Route path="/Members/Homepage" element={<MemberHome />} />
               </Route>
           </Routes>
       </AuthProvider>
