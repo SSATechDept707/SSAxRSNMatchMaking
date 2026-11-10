@@ -10,6 +10,7 @@ import CandidateRegister from "./login&Register/CandidateRegister";
 import MemberRegister from "./login&Register/MemberRegister"
 import MemberHome from "./Members/Homepage";
 import CandidateHome from "./Candidates/Homepage";
+import AdminDashboard from "/Admin/Dashboard";
 
 
 export default function App() {
@@ -31,6 +32,10 @@ export default function App() {
         <Route element={<RequireRole role="member" />}>
           <Route path="/Members/Homepage" element={<MemberHome />} />
         </Route>
+        <Route element={<RequireRole role="admin" />}>
+          <Route path="/Admin/Dashboard" element={<AdminDashboard />} />
+        </Route>
+
       </Routes>
     </AuthProvider>
   );

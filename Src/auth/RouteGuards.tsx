@@ -6,7 +6,7 @@ import { useAuth, type Role } from "./AuthContext";
 const HOME: Record<Role, string> = {
     member: "/Members/Homepage",
     candidate: "/Candidates/Homepage",
-    admin: "Admin/Dashboard"    
+    admin: "/Admin/Dashboard"    
 }
 
 function LoadingScreen() {
