@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
-import { PublicOnly, RequireRole } from "./auth/RouteGuards";
+import { RequireRole } from "./auth/RouteGuards";
 
 
 import LandingPage from "./login&Register/LandingPage";
@@ -18,12 +18,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
 
-        <Route element={<PublicOnly />}>
+
           <Route path="/CandidateLogin" element={<CandidateLogin />} />
           <Route path="/CandidateRegister" element={<CandidateRegister />} />
           <Route path="/MemberLogin" element={<MemberLogin />} />
           <Route path="/MemberRegister" element={<MemberRegister />} />
-        </Route>
+    
         <Route element={<RequireRole role="candidate" />}>
           <Route path="/Candidates/Homepage" element={<CandidateHome />} />
         </Route>

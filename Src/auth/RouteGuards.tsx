@@ -15,17 +15,6 @@ function LoadingScreen() {
     );
 }
 
-// login/register pages: logged-in users get sent to their home page
-export function PublicOnly() {
-    const { role, loading } = useAuth();
-    if (loading) return <LoadingScreen />;
-    if (role) {
-        const target = HOME[role];
-        if (!target) console.error("PublicOnly: no HOME path for role", role);
-        return <Navigate to={target ?? "/"} replace />;
-    }
-    return <Outlet />;
-}
 
 // home pages: logged-out users get sent to login
 export function RequireRole({ role: required }: { role: Role }) {
