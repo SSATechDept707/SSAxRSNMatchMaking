@@ -46,7 +46,7 @@ export default function MemberLogin() {
             const admin = await tryLogin("/api/admin");
             if (admin.ok) {
                 setRole("admin");
-                setAdminRole(admin.data.role ?? mull);
+                setAdminRole(admin.data.role ?? null);
                 navigate("/Admin/Dashboard", { replace: true });
                 return;
             }
