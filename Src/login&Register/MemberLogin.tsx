@@ -53,8 +53,9 @@ export default function MemberLogin() {
      
             // neither matched: one generic message, so it doesn't reveal which side exists
             setError("Invalid email or password");
-        } catch {
-            setError("Network error, please try again");
+        } catch (e) {
+            console.error("Login error:", e);
+            setError("Something went wrong, please try again");
         } finally {
             setLoading(false);
         }
