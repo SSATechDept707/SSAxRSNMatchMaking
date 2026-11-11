@@ -10,11 +10,15 @@ function httpError(status, message) {
 // That is NOT secure. Replace with the id from the session once login creates one.
 function getCompanyId(req) {
     const token = req.cookies?.session;
-    if (!token) throw httpError(401, "Not logged in");
+    if (!token) throw httpError(401, "No session cookie received");
     try {
-        return jwt.verify(token, process.env.JWT_SECRET).companyId;
-    } catch {
-        throw httpError(401, "Not logged in");
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        if (!payload.companyId) throw httpError(401, "Token has no companyId");
+        return payload.companyId;
+    } catch (e) {
+        if (e.status) throw e;
+        console.error("jwt error:", e.message);
+        throw httpError(401, "Bad token: " + e.message);
     }
 }
 
