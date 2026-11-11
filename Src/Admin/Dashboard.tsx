@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { LucideIcon } from "lucide-react";
 import { ChartPie, BadgeCheck, UserCog, Plus  } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 
@@ -10,7 +11,6 @@ const NAV: {key: Section; label: string; icon: string}[] = [
     {key: "manage", label: "Manage Users", icon: UserCog },
     {key: "addAdmin", label: "Create New Admin", icon: Plus }
 ]
-
 const CAN_ADD_ADMIN = ["staff", "superadmin"];
 
 export default function Dashboard() {
@@ -50,6 +50,7 @@ export default function Dashboard() {
                         </button>
                     ))}
 
+
                     {canAddAdmin && (
                         <button
                             onClick={() => setSection("addAdmin")}
@@ -63,7 +64,7 @@ export default function Dashboard() {
                 {/* content area */}
                 <main className="flex-1 bg-gray-100 p-8 overflow-y-auto">
                 <h1>{NAV.find((n) => n.key === section)?.label ?? "Add an admin"}</h1>
-                    <p className="text-gray-500">Work in progress</p>
+                    
                 </main>
             </div>
         </div>
