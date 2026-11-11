@@ -6,6 +6,9 @@ export default function CandidateRegister() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+    const [age, setAge] = useState("");
+    const [pastRole, setPastRole] = useState("");
+    const [prefName, setPrefName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -16,7 +19,7 @@ export default function CandidateRegister() {
             const res = await fetch("/api/candidates", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password }),
+                body: JSON.stringify({ name, email, password, age, pastRole, prefName }),
             });
             const data = await res.json();
 
@@ -74,7 +77,16 @@ export default function CandidateRegister() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
-                        />
+                        /> 
+                         <label className="block text-xs font-semibold text-gray-600">
+                       Preferred Name
+                    </label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setPrefName(e.target.value)}
+                        className="w-full border rounded-lg px-3 py-2"
+                    />
 
                         <label className="block text-xs font-semibold text-gray-600">
                             Email
@@ -83,6 +95,16 @@ export default function CandidateRegister() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
+
+<label className="block text-xs font-semibold text-gray-600">
+                            Age
+                        </label>
+                        <input
+                            type="number"
+                            value={age}
+                            onChange={(e) => setAge(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
 
