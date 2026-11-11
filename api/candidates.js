@@ -35,7 +35,6 @@ function parsePastJobRole(value) {
   return role;
 }
 
-// Who is calling? Returns { role, candidateId } or { role: "admin" }.
 // Assumes your admin session is { role: "admin", ... }. Adjust if yours differs.
 function getActor(req) {
   try {
@@ -130,8 +129,8 @@ export default async function handler(req, res) {
   }
 }
 
-async function createCandidate({ name, email, password, age, pastJobRole }) {
-  if (!name?.trim() || !email?.trim() || !password) {
+async function createCandidate({ name, email, password, age, pastJobRole, prefName }) {
+  if (!name?.trim() || !email?.trim() || !password || !prefName.trim()) {
     throw httpError(400, "Name, email and password are required");
   }
   const normalizedEmail = email.trim().toLowerCase();
@@ -143,9 +142,9 @@ async function createCandidate({ name, email, password, age, pastJobRole }) {
   const emailLookup = hashEmail(normalizedEmail);
 
   const rows = await sql`
-      INSERT INTO candidates (full_name, email, passwd, email_lookup, age, past_job_role)
+      INSERT INTO candidates (full_name, email, passwd, email_lookup, age, past_job_role. preferred_name)
       VALUES (${name.trim()}, ${encryptedEmail}, ${passwordHash}, ${emailLookup},
-              ${parsedAge}, ${parsedRole})
+              ${parsedAge}, ${parsedRole}, ${prefName})
       RETURNING id, full_name`;
   return rows[0];
 }
@@ -178,11 +177,12 @@ async function listCandidates(status) {
 
 // candidate (own) or admin: change name, email, age, past job role, or password
 async function updateCandidate(id, body = {}, actor) {
-  const { name, email, age, pastJobRole, newPassword, currentPassword } = body;
+  const { name, email, age, pastJobRole, prefName, newPassword, currentPassword } = body;
 
   const fullName = name === undefined ? null : String(name).trim();
+  const preferName = prefName === undefined ? null : String(prefName).trim();
   if (name !== undefined && !fullName) throw httpError(400, "Name can't be empty");
-
+  if (prefName !== undefined && !preferName) throw httpError(400, "Name can't be empty");
   const parsedAge = parseAge(age);
   const parsedRole = parsePastJobRole(pastJobRole);
 
@@ -210,12 +210,13 @@ async function updateCandidate(id, body = {}, actor) {
 
   const [row] = await sql`
       UPDATE candidates SET
-          full_name     = COALESCE(${fullName}, full_name),
-          email         = COALESCE(${encryptedEmail}, email),
-          email_lookup  = COALESCE(${emailLookup}, email_lookup),
-          passwd        = COALESCE(${passwordHash}, passwd),
-          age           = COALESCE(${parsedAge}::int, age),
-          past_job_role = COALESCE(${parsedRole}, past_job_role)
+          full_name      = COALESCE(${fullName}, full_name),
+          email          = COALESCE(${encryptedEmail}, email),
+          email_lookup   = COALESCE(${emailLookup}, email_lookup),
+          passwd         = COALESCE(${passwordHash}, passwd),
+          age            = COALESCE(${parsedAge}::int, age),
+          past_job_role  = COALESCE(${parsedRole}, past_job_role),
+          preferred_name = COALESCE(${preferName}, preferred_name)
       WHERE id = ${id}
       RETURNING *`;
   if (!row) throw httpError(404, "Candidate not found");
