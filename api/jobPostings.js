@@ -166,6 +166,7 @@ async function getPostingById(sql, id) {
     WHERE j.id = ${id}`;
     if (!row) throw httpError(404, "Posting not found");
     return row;
+    console.log(row)
 }
 
 // update only the fields that were sent
