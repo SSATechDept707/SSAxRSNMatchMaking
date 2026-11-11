@@ -157,7 +157,7 @@ export default function CandidateHome() {
                         </p>
                     )}
 
-                  
+              
 <ul className="flex flex-col gap-6">
     {shown.map((job) => {
         const skills = [
@@ -170,7 +170,7 @@ export default function CandidateHome() {
                 key={job.id}
                 className="flex flex-col md:flex-row md:items-center gap-4"
             >
-                <article className="flex-1 bg-white/95 backdrop-blur-sm border border-white/30 text-gray-700 rounded-2xl px-6 py-5 flex gap-5 shadow-sm">
+                <article className="flex-1 bg-white text-gray-700 rounded-2xl px-6 py-5 flex gap-5 shadow-sm">
 
                     {/* COMPANY LOGO */}
                     {job.logo_url ? (
@@ -185,28 +185,28 @@ export default function CandidateHome() {
 
                     <div className="flex-1 min-w-0">
 
-                        {/* COMPANY NAME */}
-                        <p className="text-xs font-semibold text-[#0e7490] uppercase tracking-wide mb-2">
-                            {job.company_name}
-                        </p>
+                        {/* TOP ROW: COMPANY NAME + PAY RANGE */}
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                            <h3 className="text-sm font-semibold text-gray-500">
+                                {job.company_name}
+                            </h3>
 
-                        {/* TITLE + PAY RANGE */}
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-
-                            <div className="min-w-0">
-                                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                                    <h2 className="text-lg font-bold text-gray-800">
-                                        {job.title}
-                                    </h2>
-
-                                    <span className="text-xs text-gray-500">
-                                        Closes {formatDate(job.closing_date)}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <span className="text-sm font-bold text-gray-800 shrink-0">
+                            <p className="text-sm font-bold text-gray-800 shrink-0">
                                 {job.pay_range}
+                            </p>
+                        </div>
+
+                        {/* JOB TITLE + OPENINGS + CLOSING DATE */}
+                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mt-1">
+                            <h2 className="text-lg font-bold text-gray-900">
+                                {job.title}
+                            </h2>
+
+                            <span className="text-xs text-gray-500">
+                                {job.avail_opening} opening
+                                {job.avail_opening === 1 ? "" : "s"}
+                                <span className="mx-1.5">•</span>
+                                Closes {formatDate(job.closing_date)}
                             </span>
                         </div>
 
@@ -216,21 +216,23 @@ export default function CandidateHome() {
                         </p>
 
                         {/* SKILLS */}
-                        <div className="mt-4 flex flex-wrap gap-2">
-                            {skills.map((s, index) => (
-                                <span
-                                    key={`${s}-${index}`}
-                                    className="bg-[#c5d5cc]/70 border border-[#c5d5cc] text-gray-700 rounded-full px-3 py-1 text-xs font-medium"
-                                >
-                                    {s}
-                                </span>
-                            ))}
-                        </div>
+                        {skills.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                {skills.map((s, index) => (
+                                    <span
+                                        key={`${s}-${index}`}
+                                        className="bg-[#c5d5cc] text-gray-700 rounded-full px-3 py-1 text-xs font-medium"
+                                    >
+                                        {s}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
 
-                        {/* POSTED DATE */}
-                        <div className="flex justify-end mt-4">
-                            <span className="text-[11px] font-semibold text-green-600">
-                                ● Posted {formatDate(job.created_at)}
+                        {/* DATE POSTED */}
+                        <div className="flex justify-end mt-3">
+                            <span className="text-[11px] text-gray-400">
+                                Posted {formatDate(job.created_at)}
                             </span>
                         </div>
                     </div>
@@ -246,9 +248,9 @@ export default function CandidateHome() {
                             ? undefined
                             : "Your account must be verified first"
                     }
-                    className={`md:w-[170px] rounded-2xl py-4 text-lg font-medium transition-all duration-200 ${
+                    className={`md:w-[170px] rounded-2xl py-4 text-lg font-medium transition-colors ${
                         isVerified
-                            ? "bg-[#0e7490] hover:bg-[#0891b2] text-white hover:-translate-y-0.5"
+                            ? "bg-[#0e7490] hover:bg-[#0891b2] text-white"
                             : "bg-[#0f4f5f] text-white/40 cursor-not-allowed"
                     }`}
                 >
