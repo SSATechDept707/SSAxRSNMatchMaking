@@ -1,4 +1,6 @@
 import { neon } from "@neondatabase/serverless";
+import jwt from "jsonwebtoken";
+
 
 const STATUSES = ["Open", "Closed"];
 
