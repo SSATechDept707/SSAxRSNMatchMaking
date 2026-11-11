@@ -7,7 +7,7 @@ export default function CandidateRegister() {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
-    const [pastRole, setPastRole] = useState("");
+    const [pastJobRole, setpastJobRole] = useState("");
     const [prefName, setPrefName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function CandidateRegister() {
             const res = await fetch("/api/candidates", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password, age, pastRole, prefName }),
+                body: JSON.stringify({ name, email, password, age, pastJobRole, prefName}),
             });
             const data = await res.json();
 
@@ -112,8 +112,8 @@ export default function CandidateRegister() {
                         </label>
                         <input
                             type="text"
-                            value={pastRole}
-                            onChange={(e) => setPastRole(e.target.value)}
+                            value={pastJobRole}
+                            onChange={(e) => setpastJobRole(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
 
