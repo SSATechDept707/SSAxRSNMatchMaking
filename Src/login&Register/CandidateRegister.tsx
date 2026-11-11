@@ -77,16 +77,16 @@ export default function CandidateRegister() {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
-                        /> 
-                         <label className="block text-xs font-semibold text-gray-600">
-                       Preferred Name
-                    </label>
-                    <input
-                        type="text"
-                        value={prefName}
-                        onChange={(e) => setPrefName(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
-                    />
+                        />
+                        <label className="block text-xs font-semibold text-gray-600">
+                            Preferred Name
+                        </label>
+                        <input
+                            type="text"
+                            value={prefName}
+                            onChange={(e) => setPrefName(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
 
                         <label className="block text-xs font-semibold text-gray-600">
                             Email
@@ -98,7 +98,7 @@ export default function CandidateRegister() {
                             className="w-full border rounded-lg px-3 py-2"
                         />
 
-<label className="block text-xs font-semibold text-gray-600">
+                        <label className="block text-xs font-semibold text-gray-600">
                             Age
                         </label>
                         <input
@@ -107,6 +107,16 @@ export default function CandidateRegister() {
                             onChange={(e) => setAge(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
+                         <label className="block text-xs font-semibold text-gray-600">
+                            Past Job Role
+                        </label>
+                        <input
+                            type="text"
+                            value={pastRole}
+                            onChange={(e) => setPastRole(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
+
 
                         <label className="block text-xs font-semibold text-gray-600">
                             Password
