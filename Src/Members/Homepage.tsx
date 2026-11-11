@@ -27,6 +27,8 @@ export default function Homepage() {
     const loadPostings = useCallback(async () => {
         try {
             const res = await fetch("/api/jobPostings?mine=true");
+            console.log("status:", res.status);
+console.log("body:", await res.clone().text());
             // session expired: clearing the role makes the route guard send them to login
             if (res.status === 401) {
                // setRole(null);
