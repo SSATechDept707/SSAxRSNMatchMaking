@@ -129,7 +129,7 @@ export default function PostJobModal({ onClose, onPosted }: PostJobModalProps) {
 
         setSaving(true);
         try {
-            const res = await fetch("/api/jobs", {
+            const res = await fetch("/api/jobPostings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
