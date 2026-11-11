@@ -160,7 +160,7 @@ async function getPostings(sql, companyId) {
 // get one posting (view full details or load into the edit form)
 async function getPostingById(sql, id) {
     const [row] = await sql`
-        SELECT j.*, c.company_name, c.logo_url
+        SELECT *
         FROM job_postings j
         JOIN member_companies c ON c.id = j.company_id
         WHERE j.id = ${id}`;
