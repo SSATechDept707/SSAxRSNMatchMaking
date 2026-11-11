@@ -14,7 +14,7 @@ function getCompanyId(req) {
     const token = req.cookies?.session;
     if (!token) throw httpError(401, "No session cookie received");
     try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const payload = jwt.verify(token, process.env.SESSION_SECRET_KEY);
         if (!payload.companyId) throw httpError(401, "Token has no companyId");
         return payload.companyId;
     } catch (e) {
