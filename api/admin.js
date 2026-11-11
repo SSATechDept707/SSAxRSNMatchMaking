@@ -156,7 +156,7 @@ async function fetchApplications(sql, { id = null, verifiedOnly = false, intervi
     SELECT a.id, a.candidate_id, a.posting_id, a.company_id,
            a.application_status, a.reason_for_rejection, a.have_interviewed,
            j.title AS job_title, co.company_name,
-           cand.full_name, cand.email, cand.email_lookup, cand.age, cand.past_job_role,
+           cand.full_name, cand.email, cand.email_lookup, cand.age, cand.past_role,
            cand.verification_status
     FROM applications_made a
     JOIN job_postings j      ON j.id = a.posting_id

@@ -142,7 +142,7 @@ async function createCandidate({ name, email, password, age, pastJobRole, prefNa
   const emailLookup = hashEmail(normalizedEmail);
 
   const rows = await sql`
-      INSERT INTO candidates (full_name, email, passwd, email_lookup, age, past_job_role. preferred_name)
+      INSERT INTO candidates (full_name, email, passwd, email_lookup, age, past_role. preferred_name)
       VALUES (${name.trim()}, ${encryptedEmail}, ${passwordHash}, ${emailLookup},
               ${parsedAge}, ${parsedRole}, ${prefName})
       RETURNING id, full_name`;
@@ -215,7 +215,7 @@ async function updateCandidate(id, body = {}, actor) {
           email_lookup   = COALESCE(${emailLookup}, email_lookup),
           passwd         = COALESCE(${passwordHash}, passwd),
           age            = COALESCE(${parsedAge}::int, age),
-          past_job_role  = COALESCE(${parsedRole}, past_job_role),
+          past_role  = COALESCE(${parsedRole}, past_role),
           preferred_name = COALESCE(${preferName}, preferred_name)
       WHERE id = ${id}
       RETURNING *`;
