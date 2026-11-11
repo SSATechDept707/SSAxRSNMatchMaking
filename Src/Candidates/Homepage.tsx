@@ -170,7 +170,7 @@ export default function CandidateHome() {
                 key={job.id}
                 className="flex flex-col md:flex-row md:items-center gap-4"
             >
-                <article className="flex-1 bg-white text-gray-700 rounded-2xl px-6 py-5 flex gap-5 shadow-sm">
+                <article className="flex-1 bg-white/20 backdrop-blur-sm border border-white/10 text-white rounded-2xl px-6 py-5 flex gap-5 shadow-sm">
 
                     {/* COMPANY LOGO */}
                     {job.logo_url ? (
