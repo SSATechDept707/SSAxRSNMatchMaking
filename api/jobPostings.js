@@ -9,9 +9,13 @@ function httpError(status, message) {
 // TEMPORARY: there's no login session yet, so we trust a companyId sent by the client.
 // That is NOT secure. Replace with the id from the session once login creates one.
 function getCompanyId(req) {
-    const id = Number(req.body?.companyId ?? req.query.companyId);
-    if (!Number.isInteger(id) || id < 1) throw httpError(401, "Not logged in");
-    return id;
+    const token = req.cookies?.session;
+    if (!token) throw httpError(401, "Not logged in");
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET).companyId;
+    } catch {
+        throw httpError(401, "Not logged in");
+    }
 }
 
 function parseId(value) {
@@ -22,9 +26,6 @@ function parseId(value) {
 
 export default async function handler(req, res) {
     const sql = neon(process.env.DATABASE_URL);
-    ts
-    console.log('cookie header:', req.headers.cookie);
-    console.log('parsed cookies:', req.cookies);
     try {
         switch (req.method) {
             case "GET": {
