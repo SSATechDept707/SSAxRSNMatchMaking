@@ -142,7 +142,7 @@ async function createCandidate({ name, email, password, age, pastJobRole, prefNa
   const emailLookup = hashEmail(normalizedEmail);
 
   const rows = await sql`
-      INSERT INTO candidates (full_name, email, passwd, email_lookup, age, past_role. preferred_name)
+      INSERT INTO candidates (full_name, email, passwd, email_lookup, age, past_role, preferred_name)
       VALUES (${name.trim()}, ${encryptedEmail}, ${passwordHash}, ${emailLookup},
               ${parsedAge}, ${parsedRole}, ${prefName})
       RETURNING id, full_name`;
