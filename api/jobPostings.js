@@ -149,8 +149,7 @@ async function getPostings(sql, companyId) {
             ORDER BY created_at DESC`;
     }
     return await sql`
-        SELECT j.id, j.title, j.description, j.pay_range, j.soft_skills, j.tech_skills,
-               j.avail_opening, j.closing_date, c.company_name, c.logo_url
+        SELECT j.*, c.company_name, c.logo_url
         FROM job_postings j
         JOIN member_companies c ON c.id = j.company_id
         WHERE j.posting_status = 'Open' AND j.closing_date > now()
@@ -166,7 +165,6 @@ async function getPostingById(sql, id) {
     WHERE j.id = ${id}`;
     if (!row) throw httpError(404, "Posting not found");
     return row;
-    console.log(row)
 }
 
 // update only the fields that were sent
