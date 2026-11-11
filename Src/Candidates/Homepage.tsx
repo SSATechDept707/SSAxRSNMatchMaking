@@ -24,7 +24,9 @@ type Profile = {
 
 // dd/mm/yyyy in Singapore time
 const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString("en-GB", { timeZone: "Asia/Singapore" });
+    new Date(iso.replace(" ", "T")).toLocaleDateString("en-GB", {
+        timeZone: "Asia/Singapore",
+    });
 
 export default function CandidateHome() {
     const { setRole, logout } = useAuth();
@@ -167,96 +169,94 @@ export default function CandidateHome() {
 
         return (
             <li
-                key={job.id}
-                className="flex flex-col md:flex-row md:items-center gap-4"
-            >
-                <article className="flex-1 bg-white/20 backdrop-blur-sm border border-white/10 text-white rounded-2xl px-6 py-5 flex gap-5 shadow-sm">
+    key={job.id}
+    className="flex flex-col md:flex-row md:items-center gap-4"
+>
+    <article className="flex-1 bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-5 flex flex-col gap-4">
 
-                    {/* COMPANY LOGO */}
-                    {job.logo_url ? (
-                        <img
-                            src={job.logo_url}
-                            alt={job.company_name}
-                            className="h-[88px] w-[88px] rounded-full object-cover shrink-0"
-                        />
-                    ) : (
-                        <div className="h-[88px] w-[88px] rounded-full bg-gray-200 shrink-0" />
-                    )}
+        {/* TOP ROW: COMPANY NAME + PAY RANGE */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+                {job.logo_url ? (
+                    <img
+                        src={job.logo_url}
+                        alt={job.company_name}
+                        className="h-10 w-10 rounded-full object-cover shrink-0"
+                    />
+                ) : (
+                    <div className="h-10 w-10 rounded-full bg-white/15 shrink-0" />
+                )}
 
-                    <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white">
+                    {job.company_name}
+                </p>
+            </div>
 
-                        {/* TOP ROW: COMPANY NAME + PAY RANGE */}
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                            <h3 className="text-sm font-semibold text-gray-500">
-                                {job.company_name}
-                            </h3>
+            <p className="text-sm font-semibold text-white shrink-0">
+                {job.pay_range}
+            </p>
+        </div>
 
-                            <p className="text-sm font-bold text-gray-800 shrink-0">
-                                {job.pay_range}
-                            </p>
-                        </div>
+        {/* JOB TITLE + OPENINGS + CLOSING DATE */}
+        <div>
+            <h2 className="text-lg font-semibold text-white">
+                {job.title}
+            </h2>
 
-                        {/* JOB TITLE + OPENINGS + CLOSING DATE */}
-                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mt-1">
-                            <h2 className="text-lg font-bold text-gray-900">
-                                {job.title}
-                            </h2>
+            <p className="text-xs text-white/70 mt-1">
+                {job.avail_opening} opening
+                {job.avail_opening === 1 ? "" : "s"}
+                <span className="mx-2">•</span>
+                Closes {formatDate(job.closing_date)}
+            </p>
+        </div>
 
-                            <span className="text-xs text-gray-500">
-                                {job.avail_opening} opening
-                                {job.avail_opening === 1 ? "" : "s"}
-                                <span className="mx-1.5">•</span>
-                                Closes {formatDate(job.closing_date)}
-                            </span>
-                        </div>
+        {/* DESCRIPTION */}
+        <p className="text-sm text-white/85 leading-relaxed whitespace-pre-line line-clamp-3">
+            {job.description}
+        </p>
 
-                        {/* DESCRIPTION */}
-                        <p className="mt-3 text-sm text-gray-600 leading-relaxed whitespace-pre-line line-clamp-3">
-                            {job.description}
-                        </p>
+        {/* SKILLS */}
+        {skills.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+                {skills.map((skill, index) => (
+                    <span
+                        key={`${skill}-${index}`}
+                        className="text-xs text-white/90 bg-white/15 border border-white/10 rounded-full px-3 py-1"
+                    >
+                        {skill}
+                    </span>
+                ))}
+            </div>
+        )}
 
-                        {/* SKILLS */}
-                        {skills.length > 0 && (
-                            <div className="mt-3 flex flex-wrap gap-2">
-                                {skills.map((s, index) => (
-                                    <span
-                                        key={`${s}-${index}`}
-                                        className="bg-[#c5d5cc] text-gray-700 rounded-full px-3 py-1 text-xs font-medium"
-                                    >
-                                        {s}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
+        {/* DATE POSTED */}
+        <div className="flex justify-end mt-1">
+            <p className="text-[11px] text-white/50">
+                Posted {formatDate(job.created_at)}
+            </p>
+        </div>
+    </article>
 
-                        {/* DATE POSTED */}
-                        <div className="flex justify-end mt-3">
-                            <span className="text-[11px] text-gray-400">
-                                Posted {formatDate(job.created_at)}
-                            </span>
-                        </div>
-                    </div>
-                </article>
-
-                {/* SUBMIT CV BUTTON */}
-                <button
-                    type="button"
-                    disabled={!isVerified}
-                    onClick={() => handleSubmitCv(job)}
-                    title={
-                        isVerified
-                            ? undefined
-                            : "Your account must be verified first"
-                    }
-                    className={`md:w-[170px] rounded-2xl py-4 text-lg font-medium transition-colors ${
-                        isVerified
-                            ? "bg-[#0e7490] hover:bg-[#0891b2] text-white"
-                            : "bg-[#0f4f5f] text-white/40 cursor-not-allowed"
-                    }`}
-                >
-                    Submit CV
-                </button>
-            </li>
+    {/* SUBMIT CV BUTTON */}
+    <button
+        type="button"
+        disabled={!isVerified}
+        onClick={() => handleSubmitCv(job)}
+        title={
+            isVerified
+                ? undefined
+                : "Your account must be verified first"
+        }
+        className={`md:w-[170px] rounded-2xl py-4 text-lg font-medium transition-colors ${
+            isVerified
+                ? "bg-[#0e7490] hover:bg-[#0891b2] text-white"
+                : "bg-[#0f4f5f] text-white/40 cursor-not-allowed"
+        }`}
+    >
+        Submit CV
+    </button>
+</li>
         );
     })}
 </ul>
