@@ -99,7 +99,7 @@ export default function CandidateHome() {
                     className="h-[48px] w-auto object-contain"
                 />
                 <div className="flex flex-col text-black items-center gap-1">
-                    <Link to="/profile" className="text-xs font-semibold hover:underline">
+                    <Link to="/Candidates/Profile" className="text-xs font-semibold hover:underline">
                         hello, {firstName}!
                     </Link>
                     <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
