@@ -83,7 +83,7 @@ export default function CandidateRegister() {
                     </label>
                     <input
                         type="text"
-                        value={name}
+                        value={prefName}
                         onChange={(e) => setPrefName(e.target.value)}
                         className="w-full border rounded-lg px-3 py-2"
                     />
