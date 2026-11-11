@@ -11,6 +11,7 @@ import MemberRegister from "./login&Register/MemberRegister"
 import MemberHome from "./Members/Homepage";
 import CandidateHome from "./Candidates/Homepage";
 import AdminDashboard from "./Admin/Dashboard";
+import CandidateProfile from "./Candidates/Profile";
 
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
         
         <Route element={<RequireRole role="candidate" />}>
           <Route path="/Candidates/Homepage" element={<CandidateHome />} />
+          <Route path="/Candidates/Profile" element={<CandidateProfile />} />
         </Route>
 
         <Route element={<RequireRole role="member" />}>

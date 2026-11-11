@@ -97,6 +97,10 @@ export default async function handler(req, res) {
       const candidate = await getCandidateById(resolveTargetId(req, actor));
       if (!candidate) return res.status(404).json({ error: "Candidate not found" });
       return res.status(200).json(candidate);
+
+      if (req.query.postings && actor.role === "candidate") {
+        return res.status(200).json(await getApplicationsByCandidate(sql, actor.candidateId));
+      }
     }
 
     if (req.method === "PATCH") {
@@ -238,4 +242,19 @@ async function updateCandidateStatus(id, status) {
       RETURNING *`;
   if (!row) throw httpError(404, "Candidate not found");
   return toPublic(row);
+}
+
+
+async function getApplicationsByCandidate() {
+  return await sql`
+    SELECT a.id AS application_id, a.application_status, a.reason_for_rejection, a.have_interviewed,
+           j.id AS posting_id, j.title, j.description, j.pay_range, j.soft_skills, j.tech_skills,
+           j.avail_opening, j.closing_date, j.posting_status, j.created_at,
+           c.company_name, c.logo_url
+    FROM applications_made a
+    JOIN job_postings j      ON j.id = a.posting_id
+    JOIN member_companies c  ON c.id = j.company_id
+    WHERE a.candidate_id = ${candidateId}
+    ORDER BY a.id DESC`;
+
 }
