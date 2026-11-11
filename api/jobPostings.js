@@ -22,7 +22,9 @@ function parseId(value) {
 
 export default async function handler(req, res) {
     const sql = neon(process.env.DATABASE_URL);
-
+    ts
+    console.log('cookie header:', req.headers.cookie);
+    console.log('parsed cookies:', req.cookies);
     try {
         switch (req.method) {
             case "GET": {
