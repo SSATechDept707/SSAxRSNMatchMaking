@@ -106,31 +106,62 @@ console.log("body:", await res.clone().text());
                     <p className="text-white/50 text-xl text-center mt-24">Upload new jobs here!</p>
                 )}
                 {tab === "jobs" && loadState === "ready" && postings.length > 0 && (
-                    <ul className="flex flex-col gap-4 max-w-[900px]">
-                        {postings.map((p) => (
-                            <li
-                                key={p.id}
-                                className="bg-white/10 rounded-2xl px-5 py-4 flex flex-wrap items-center justify-between gap-3"
-                            >
-                                <div>
-                                    <h2 className="text-lg font-semibold">{p.title}</h2>
-                                    <p className="text-sm text-white/70">
-                                        {p.pay_range} · {p.avail_opening} opening{p.avail_opening === 1 ? "" : "s"} ·
-                                        Closes {formatDate(p.closing_date)}
-                                    </p>
-                                </div>
-                                <span
-                                    className={`text-xs font-semibold rounded-full px-3 py-1 ${
-                                        p.posting_status === "Open"
-                                            ? "bg-green-500/20 text-green-300"
-                                            : "bg-white/15 text-white/70"
-                                    }`}
-                                >
-                                    {p.posting_status}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
+                    
+<ul className="flex flex-col gap-4 max-w-[900px]">
+    {postings.map((p) => (
+        <li
+            key={p.id}
+            className="bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-5 flex flex-col gap-4"
+        >
+            {/* TOP ROW: TITLE + PAY RANGE */}
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                    <h2 className="text-lg font-semibold text-white">
+                        {p.title}
+                    </h2>
+
+                    <p className="text-xs text-white/70 mt-1">
+                        {p.avail_opening} opening{p.avail_opening === 1 ? "" : "s"}
+                        <span className="mx-2">•</span>
+                        Closes {formatDate(p.closing_date)}
+                    </p>
+                </div>
+
+                <p className="text-sm font-semibold text-white shrink-0">
+                    {p.pay_range}
+                </p>
+            </div>
+
+            {/* DESCRIPTION */}
+            <p className="text-sm text-white/85 leading-relaxed whitespace-pre-line">
+                {p.description}
+            </p>
+
+            {/* SKILLS */}
+            <div className="flex flex-wrap gap-2">
+                {[
+                    ...(p.tech_skills || []),
+                    ...(p.soft_skills || []),
+                ].map((skill, index) => (
+                    <span
+                        key={`${skill}-${index}`}
+                        className="text-xs text-white/90 bg-white/15 border border-white/10 rounded-full px-3 py-1"
+                    >
+                        {skill}
+                    </span>
+                ))}
+            </div>
+
+            {/* BOTTOM RIGHT: DATE POSTED */}
+            <div className="flex justify-end mt-1">
+                <p className="text-[11px] text-white/50">
+                    Posted {formatDate(p.created_at)}
+                </p>
+            </div>
+        </li>
+    ))}
+</ul>
+
                 )}
             </main>
 
