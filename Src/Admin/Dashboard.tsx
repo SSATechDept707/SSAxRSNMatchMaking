@@ -10,7 +10,6 @@ const NAV: {key: Section; label: string; icon: string}[] = [
     {key: "data", label: "Analytics", icon: ChartPie },
     {key: "verify", label: "Verify Users", icon: BadgeCheck },
     {key: "manage", label: "Manage Users", icon: UserCog },
-    {key: "addAdmin", label: "Create New Admin", icon: Plus }
 ]
 const CAN_ADD_ADMIN = ["staff", "superadmin"];
 
