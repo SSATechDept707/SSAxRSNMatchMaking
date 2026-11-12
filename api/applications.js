@@ -62,9 +62,8 @@ export default async function handler(req, res) {
         if (req.query.action === "apply") {
           const postingId = parseId(req.query.id);
           const recipients = await getEmailByPostingId(sql, postingId);
-          // await sendCvEmail({ to: recipients, ...applicant data });
-          return res.status(200).json({ sent: true });
-      }
+          return res.status(200).json({ recipients });
+        }
         if (actor.role !== "candidate") throw httpError(403, "Only candidates can apply");
         return res.status(201).json(await createAnApplication(sql, actor.candidateId, req.body?.postingId));
 
@@ -114,6 +113,8 @@ async function fetchApplications(sql, { id = null, candidateId = null, companyId
     ORDER BY a.id DESC`;
   return rows.map((r) => ({ ...r, email: decrypt(r.email) }));
 }
+
+
 async function getEmailByPostingId(sql, id) {
   const [row] = await sql`
   SELECT
