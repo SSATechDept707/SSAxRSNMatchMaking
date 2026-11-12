@@ -33,7 +33,7 @@ const formatDate = (iso: string) =>
   async function handleSubmitCv(job: Job) {
 
     try {
-        const res = await fetch(`/api/applications?id=${id}&action=apply`, {
+        const res = await fetch(`/api/applications?id=${job.id}&action=apply`, {
                 method: "POST",
         }); 
     const data = await res.json();
@@ -57,15 +57,6 @@ export default function CandidateHome() {
 
     const [showModal, setShowModal] =  useState(false);
     const [receipients, setReceipiets] = useState<string[]>([]);
-
-    useEffect(() => {
-        const res = await fetch(`/api/applications?id=${id}&action=apply`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({id})
-        })
-    }) 
-
 
     useEffect(() => {
         let cancelled = false;
