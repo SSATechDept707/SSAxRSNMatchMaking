@@ -30,24 +30,6 @@ const formatDate = (iso: string) =>
         timeZone: "Asia/Singapore",
     });
 
-  async function handleSubmitCv(job: Job) {
-
-    try {
-        const res = await fetch(`/api/applications?id=${job.id}&action=apply`, {
-                method: "POST",
-        }); 
-    const data = await res.json();
-     if (!res.ok) throw new Error(data.error ?? "Something went Wrong")
-      
-     
-     setRecipients(data.recipients ?? []);
-        setShowModal(true);
-    } catch(e) {
-        console.error(e);
- }  
-}
-
-
 export default function CandidateHome() {
     const { setRole, logout } = useAuth();
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -94,6 +76,24 @@ export default function CandidateHome() {
         };
     }, [setRole]);
 
+    
+    async function handleSubmitCv(job: Job) {
+
+        try {
+            const res = await fetch(`/api/applications?id=${job.id}&action=apply`, {
+                    method: "POST",
+            }); 
+        const data = await res.json();
+         if (!res.ok) throw new Error(data.error ?? "Something went Wrong")
+          
+         
+         setRecipients(data.recipients ?? []);
+            setShowModal(true);
+        } catch(e) {
+            console.error(e);
+     }  
+    }
+    
     const isVerified = profile?.verification_status === VERIFIED;
     const firstName = profile?.preferred_name?.split(" ")[0] ?? "there";
 
