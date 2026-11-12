@@ -56,7 +56,7 @@ export default function CandidateHome() {
     const [search, setSearch] = useState("");
 
     const [showModal, setShowModal] =  useState(false);
-    const [receipients, setReceipiets] = useState<string[]>([]);
+    const [recipients, setRecipients] = useState<string[]>([]);
 
     useEffect(() => {
         let cancelled = false;
