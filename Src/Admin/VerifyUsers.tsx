@@ -27,7 +27,7 @@ export default function VerifyUsers() {
     const [error, setError] = useState("");
 
 
-    useEfferct(() => {
+    useEffect(() => {
         adminCall<Candidate[]>("getCandidateByStatus", { status: "unverified" })
         .then(setUsers)
         .catch((e) => setError(e.message))
