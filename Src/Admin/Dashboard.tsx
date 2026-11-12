@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { ChartPie, BadgeCheck, UserCog, Plus  } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
+import VerifyUsers from "./VerifyUsers";
 
 type Section = "data" | "verify" | "manage" | "addAdmin";
 
@@ -63,9 +64,12 @@ export default function Dashboard() {
 
                 {/* content area */}
                 <main className="flex-1 bg-gray-100 p-8 overflow-y-auto">
-                <h1>{NAV.find((n) => n.key === section)?.label ?? "Add an admin"}</h1>
-                    
-                </main>
+    <h1 className="text-xl font-semibold mb-4">
+        {NAV.find((n) => n.key === section)?.label}
+    </h1>
+
+    {section === "verify" && <VerifyUsers />}
+</main>
             </div>
         </div>
     );
