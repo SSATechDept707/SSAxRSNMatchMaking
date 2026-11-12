@@ -167,6 +167,15 @@ async function getPostingById(sql, id) {
     return row;
 }
 
+
+async function getEmailByPostingId(sql, id) {
+    const [row] = await `
+    SELECT m.company_email AND m.company_rep_email 
+    FROM company_accounts
+    WHERE  
+    `
+}
+
 // update only the fields that were sent
 async function updatePostingById(sql, id, companyId, body) {
     const p = parsePosting(body, true);
