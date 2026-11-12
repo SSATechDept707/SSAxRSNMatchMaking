@@ -23,7 +23,7 @@ function checkPassword(p) {
 async function getMember(sql, req) {
   const { accountId } = requireSession(req, "member");
   const [acct] = await sql`
-    SELECT id, company_id, rep_email, is_rep, approved
+    SELECT id, company_id, email, is_rep, approved
     FROM company_accounts WHERE id = ${accountId}`;
   if (!acct || !acct.approved) throw httpError(401, "Not logged in");
   return acct;
@@ -116,9 +116,9 @@ async function registerCompany(sql, b) {
          ${logoUrl ?? null}, ${repName.trim()}, ${email})
       RETURNING id
     )
-    INSERT INTO company_accounts (company_id, rep_email, passwd, is_rep, approved)
+    INSERT INTO company_accounts (company_id, email, passwd, is_rep, approved)
     SELECT id, ${email}, ${hash}, true, true FROM c
-    RETURNING id, company_id, rep_email`;
+    RETURNING id, company_id, email`;
   return row;
 }
 
@@ -136,9 +136,9 @@ async function registerAccount(sql, { uen, email, password }) {
 
   const hash = await bcrypt.hash(password, 10);
   const [row] = await sql`
-    INSERT INTO company_accounts (company_id, rep_email, passwd, is_rep, approved)
+    INSERT INTO company_accounts (company_id, email, passwd, is_rep, approved)
     VALUES (${company.id}, ${normalized}, ${hash}, false, false)
-    RETURNING id, company_id, rep_email, approved`;
+    RETURNING id, company_id, email, approved`;
   return row;
 }
 
@@ -147,8 +147,8 @@ async function memberLogin(sql, { email, password }) {
   if (!email || !password) throw httpError(400, "Email and password are required");
 
   const [acct] = await sql`
-    SELECT id, company_id, rep_email, passwd, is_rep, approved
-    FROM company_accounts WHERE lower(rep_email) = ${normEmail(email)}`;
+    SELECT id, company_id, email, passwd, is_rep, approved
+    FROM company_accounts WHERE lower(email) = ${normEmail(email)}`;
 
   const ok = acct && (await bcrypt.compare(password, acct.passwd));
   if (!ok) throw httpError(401, "Invalid credentials");
@@ -164,7 +164,7 @@ async function approveNewCompanyAccount(sql, me, accountId) {
   const [row] = await sql`
     UPDATE company_accounts SET approved = true
     WHERE id = ${accountId} AND company_id = ${me.company_id}
-    RETURNING id, company_id, rep_email, is_rep, approved`;
+    RETURNING id, company_id, email, is_rep, approved`;
   if (!row) throw httpError(404, "Account not found");
   return row;
 }
@@ -172,7 +172,7 @@ async function approveNewCompanyAccount(sql, me, accountId) {
 // get profile: the account plus its company details
 async function getMemberById(sql, id) {
   const [row] = await sql`
-    SELECT a.id, a.rep_email, a.is_rep, a.approved,
+    SELECT a.id, a.email, a.is_rep, a.approved,
            c.id AS company_id, c.uen, c.company_name, c.location, c.logo_url,
            c.company_rep_name, c.company_rep_email
     FROM company_accounts a
@@ -186,7 +186,7 @@ async function getMemberById(sql, id) {
 async function listCompanyAccounts(sql, me) {
   requireRep(me);
   return await sql`
-    SELECT id, rep_email, is_rep, approved FROM company_accounts
+    SELECT id, email, is_rep, approved FROM company_accounts
     WHERE company_id = ${me.company_id}
     ORDER BY approved, id`;
 }
@@ -232,7 +232,7 @@ async function updateMember(sql, me, body) {
   if (newEmail || hash) {
     queries.push(sql`
       UPDATE company_accounts SET
-      rep_email  = COALESCE(${newEmail}, rep_email),
+      email  = COALESCE(${newEmail}, email),
         passwd = COALESCE(${hash}, passwd)
       WHERE id = ${me.id}`);
   }
