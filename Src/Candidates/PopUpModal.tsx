@@ -47,7 +47,7 @@ export default function PopUpModal({ jobId, recipients, onClose,  onSubmitted }:
 
         try {
 
-            const res = await fetch("api/applications", {
+            const res = await fetch("/api/applications", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({ postingId: jobId }),
