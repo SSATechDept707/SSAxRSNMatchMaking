@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await fetch("/api/session", { method: "DELETE" });
         setRole(null);
         setAdminRole(null);
+        navigate("/", { replace: true });
     }
 
     return (
