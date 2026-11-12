@@ -64,7 +64,7 @@ export default async function handler(req, res) {
           const recipients = await getEmailByPostingId(sql, postingId);
           return res.status(200).json({ recipients });
         }
-        if (actor.role !== "candidate") throw httpError(403, "Only candidates can apply");
+        if (actor.role !== "candidate") throw httpError(403, "UNAUTHORIZED ACCESS");
         return res.status(201).json(await createAnApplication(sql, actor.candidateId, req.body?.postingId));
 
       case "GET": {
