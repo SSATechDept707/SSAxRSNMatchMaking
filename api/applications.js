@@ -59,6 +59,12 @@ export default async function handler(req, res) {
 
     switch (req.method) {
       case "POST":
+        if (req.query.action === "apply") {
+          const postingId = parseId(req.query.id);
+          const recipients = await getEmailByPostingId(sql, postingId);
+          // await sendCvEmail({ to: recipients, ...applicant data });
+          return res.status(200).json({ sent: true });
+      }
         if (actor.role !== "candidate") throw httpError(403, "Only candidates can apply");
         return res.status(201).json(await createAnApplication(sql, actor.candidateId, req.body?.postingId));
 
@@ -87,6 +93,7 @@ export default async function handler(req, res) {
   }
 }
 
+
 // one query for every read: each filter is optional
 async function fetchApplications(sql, { id = null, candidateId = null, companyId = null, postingId = null, status = null }) {
   const rows = await sql`
@@ -107,6 +114,21 @@ async function fetchApplications(sql, { id = null, candidateId = null, companyId
     ORDER BY a.id DESC`;
   return rows.map((r) => ({ ...r, email: decrypt(r.email) }));
 }
+async function getEmailByPostingId(sql, id) {
+  const [row] = await sql`
+  SELECT
+      CASE m.cv_recipient
+          WHEN 'rep' THEN ARRAY[m.company_rep_email]
+          WHEN 'company' THEN ARRAY[COALESCE(m.company_email, m.company_rep_email)]
+          ELSE ARRAY_REMOVE(ARRAY[m.company_rep_email, m.company_email], NULL)
+      END AS recipients
+  FROM job_postings j
+  JOIN member_companies m ON m.id = j.company_id
+  WHERE j.id = ${id}`;
+if (!row) throw httpError(404, "Posting not found");
+return row.recipients;
+}
+
 
 // candidate applies for a job. company_id comes from the posting, never from the client.
 async function createAnApplication(sql, candidateId, postingId) {

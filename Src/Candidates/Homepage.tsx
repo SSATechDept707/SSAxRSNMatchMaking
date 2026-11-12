@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import PopUpModal from "./PopUpModal";
 
 const VERIFIED = "verified"; // the value your admin sets when approving a candidate
 
@@ -29,12 +30,42 @@ const formatDate = (iso: string) =>
         timeZone: "Asia/Singapore",
     });
 
+  async function handleSubmitCv(job: Job) {
+
+    try {
+        const res = await fetch(`/api/applications?id=${id}&action=apply`, {
+                method: "POST",
+        }); 
+    const data = await res.json();
+     if (!res.ok) throw new Error(data.error ?? "Something went Wrong")
+      
+     
+     setRecipients(data.recipients ?? []);
+        setShowModal(true);
+    } catch(e) {
+        console.error(e);
+ }  
+}
+
+
 export default function CandidateHome() {
     const { setRole, logout } = useAuth();
     const [jobs, setJobs] = useState<Job[]>([]);
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
     const [search, setSearch] = useState("");
+
+    const [showModal, setShowModal] =  useState(false);
+    const [receipients, setReceipiets] = useState<string[]>([]);
+
+    useEffect(() => {
+        const res = await fetch(`/api/applications?id=${id}&action=apply`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id})
+        })
+    }) 
+
 
     useEffect(() => {
         let cancelled = false;
@@ -83,11 +114,6 @@ export default function CandidateHome() {
                 s.toLowerCase().includes(q)
             )
     );
-
-    function handleSubmitCv(job: Job) {
-        // TODO: open the CV upload, then POST to the applications API
-        console.log("submit CV for job", job.id);
-    }
 
     return (
         <div className="min-h-screen w-full bg-[#262261] text-white pb-12">
@@ -256,6 +282,12 @@ export default function CandidateHome() {
                                     >
                                         Submit CV
                                     </button>
+                                    {showModal && (
+            <PopUpModal
+                recipients={recipients}
+                onClose={() => setShowModal(false)}
+            />
+        )}
                                 </li>
                             );
                         })}

@@ -41,12 +41,6 @@ export default async function handler(req, res) {
                 return res.status(200).json(await getPostings(sql));
             }
             case "POST":
-                if (req.query.action === "apply") {
-                    const postingId = parseId(req.query.id);
-                    const recipients = await getEmailByPostingId(sql, postingId);
-                    // await sendCvEmail({ to: recipients, ...applicant data });
-                    return res.status(200).json({ sent: true });
-                }
                 return res.status(201).json(await createPosting(sql, getCompanyId(req), req.body));
             case "PATCH":
                 return res
@@ -171,22 +165,6 @@ async function getPostingById(sql, id) {
     WHERE j.id = ${id}`;
     if (!row) throw httpError(404, "Posting not found");
     return row;
-}
-
-
-async function getEmailByPostingId(sql, id) {
-    const [row] = await sql`
-    SELECT
-        CASE m.cv_recipient
-            WHEN 'rep' THEN ARRAY[m.company_rep_email]
-            WHEN 'company' THEN ARRAY[COALESCE(m.company_email, m.company_rep_email)]
-            ELSE ARRAY_REMOVE(ARRAY[m.company_rep_email, m.company_email], NULL)
-        END AS recipients
-    FROM job_postings j
-    JOIN member_companies m ON m.id = j.company_id
-    WHERE j.id = ${id}`;
-if (!row) throw httpError(404, "Posting not found");
-return row.recipients;
 }
 
 // update only the fields that were sent
