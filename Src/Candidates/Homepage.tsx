@@ -36,6 +36,7 @@ export default function CandidateHome() {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
     const [search, setSearch] = useState("");
+    const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
 
     const [showModal, setShowModal] =  useState(false);
     const [recipients , setRecipients] = useState<string[]>([]);
@@ -76,7 +77,7 @@ export default function CandidateHome() {
         };
     }, [setRole]);
 
-    
+
     async function handleSubmitCv(job: Job) {
 
         try {
@@ -86,9 +87,9 @@ export default function CandidateHome() {
         const data = await res.json();
          if (!res.ok) throw new Error(data.error ?? "Something went Wrong")
           
-         
+         setSelectedJobId(job.id);
          setRecipients(data.recipients ?? []);
-            setShowModal(true);
+         setShowModal(true);
         } catch(e) {
             console.error(e);
      }  
@@ -273,12 +274,14 @@ export default function CandidateHome() {
                                     >
                                         Submit CV
                                     </button>
-                                    {showModal && (
-            <PopUpModal
-                recipients={recipients}
-                onClose={() => setShowModal(false)}
-            />
-        )}
+                                    {showModal && selectedJobId !== null && (
+    <PopUpModal
+        jobId={selectedJobId}
+        recipients={recipients}
+        onClose={() => setShowModal(false)}
+        onSubmitted={() => { /* e.g. refresh the list or show a "Applied" badge */ }}
+    />
+)}
                                 </li>
                             );
                         })}
