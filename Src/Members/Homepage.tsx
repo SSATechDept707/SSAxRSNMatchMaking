@@ -27,8 +27,7 @@ export default function Homepage() {
     const loadPostings = useCallback(async () => {
         try {
             const res = await fetch(`/api/jobPostings?mine=true`);
-            console.log("status:", res.status);
-console.log("body:", await res.clone().text());
+
             // session expired: clearing the role makes the route guard send them to login
             if (res.status === 401) {
                // setRole(null);
@@ -74,10 +73,6 @@ console.log("body:", await res.clone().text());
                 <button onClick={() => setTab("jobs")} className={tabClass("jobs")}>
                     Jobs Posted
                 </button>
-                <span className="text-white/60">|</span>
-                <button onClick={() => setTab("applicants")} className={tabClass("applicants")}>
-                    View applicants
-                </button>
             </nav>
 
             {/* Add posting button (jobs tab only) */}
@@ -94,10 +89,6 @@ console.log("body:", await res.clone().text());
 
             {/* Content area */}
             <main className="flex-1 px-[clamp(1.5rem,5vw,4.5rem)] py-6">
-                {tab === "applicants" && (
-                    <p className="text-white/50 text-xl text-center mt-24">Applicants will appear here</p>
-                )}
-
                 {tab === "jobs" && loadState === "loading" && <p className="text-white/60">Loading...</p>}
                 {tab === "jobs" && loadState === "error" && (
                     <p className="text-white/60">Couldn't load your postings. Please refresh the page.</p>
