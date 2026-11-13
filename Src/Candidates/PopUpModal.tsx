@@ -97,14 +97,14 @@ export default function PopUpModal({ jobId, recipients, onClose,  onSubmitted }:
                         </p>
                     </div>
                     <p className="mt-4 text-sm text-gray-500">
-                        Attach your CV in your email app and send it. Then come back and confirm below.
+                        Please email your CV to the addressed. Once completed, do confirm below.
                     </p>
                 </>
             )}
 
             <div className="mt-6 bg-purple-50 rounded-xl p-4">
                 <p className="text-sm text-purple-800">
-                    Make sure to get your CV ready before sending your application.
+                    Please get your CV Ready.
                 </p>
             </div>
 
