@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [role, setRole] = useState<Role | null>(null);
     const [loading, setLoading] = useState(true);
     const [adminRole, setAdminRole] = useState<string | null>(null);
-
+    const navigate = useNavigate();
     // runs once when the app first loads: ask the server who we are
     useEffect(() => {
         const wait = new Promise((resolve) => setTimeout(resolve, MIN_LOADING_MS));
