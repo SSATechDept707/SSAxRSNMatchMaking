@@ -7,6 +7,8 @@ const HOME: Record<Role, string> = {
     admin: "/Admin/Dashboard",
 };
 
+
+
 const LOGIN: Record<Role, string> = {
     member: "/MemberLogin",
     candidate: "/CandidateLogin",
@@ -33,7 +35,7 @@ export function PublicOnly() {
 export function RequireRole({ role: required }: { role: Role }) {
     const { role, loading } = useAuth();
     if (loading) return <LoadingScreen />;
-    if (!role) return <Navigate to={LOGIN[required]} replace />;
+    if (!role) return <Navigate to="/" replace />;
     if (role !== required) return <Navigate to={HOME[role] ?? LOGIN[required]} replace />;
     return <Outlet />;
 }
