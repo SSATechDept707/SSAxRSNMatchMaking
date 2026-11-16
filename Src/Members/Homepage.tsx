@@ -175,6 +175,13 @@ export default function Homepage() {
 
             {/* The popup form, only rendered while showForm is true */}
             {showForm && <PostJobModal onClose={() => setShowForm(false)} onPosted={loadPostings} />}
+            {viewingPosting && (
+    <ViewApplicants
+        postingId={viewingPosting.id}
+        title={viewingPosting.title}
+        onClose={() => setViewingPosting(null)}
+    />
+)}
         </div>
     );
 }
