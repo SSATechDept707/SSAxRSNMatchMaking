@@ -37,7 +37,7 @@ export default function Homepage() {
 
             // session expired: clearing the role makes the route guard send them to login
             if (res.status === 401) {
-               // setRole(null);
+                // setRole(null);
                 return;
             }
             if (!res.ok) throw new Error("request failed");
@@ -53,8 +53,7 @@ export default function Homepage() {
     }, [loadPostings, setRole]);
 
     const tabClass = (t: Tab) =>
-        `text-[clamp(16px,1.6vw,22px)] font-semibold transition-opacity ${
-            tab === t ? "text-white" : "text-white/60 hover:text-white/90"
+        `text-[clamp(16px,1.6vw,22px)] font-semibold transition-opacity ${tab === t ? "text-white" : "text-white/60 hover:text-white/90"
         }`;
 
     return (
@@ -104,71 +103,72 @@ export default function Homepage() {
                     <p className="text-white/50 text-xl text-center mt-24">Upload new jobs here!</p>
                 )}
                 {tab === "jobs" && loadState === "ready" && postings.length > 0 && (
-                    
-<ul className="flex flex-col gap-4 max-w-[1100px]">
-    {postings.map((p) => (
 
-       <li key={p.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
-       {/* the card */}
-       <div className="flex-1 min-w-0 bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-5 flex flex-col gap-4">
-   
-            {/* TOP ROW: TITLE + PAY RANGE */}
-            <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                    <h2 className="text-lg font-semibold text-white">
-                        {p.title}
-                    </h2>
+                    <ul className="flex flex-col gap-4 max-w-[1100px]">
+                        {postings.map((p) => (
 
-                    <p className="text-xs text-white/70 mt-1">
-                        {p.avail_opening} opening{p.avail_opening === 1 ? "" : "s"}
-                        <span className="mx-2">•</span>
-                        Closes {formatDate(p.closing_date)}
-                    </p>
-                </div>
+                            <li key={p.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                {/* the card */}
+                                <div className="flex-1 min-w-0 bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-5 flex flex-col gap-4">
 
-                <p className="text-sm font-semibold text-white shrink-0">
-                    {p.pay_range}
-                </p>
-            </div>
+                                    {/* TOP ROW: TITLE + PAY RANGE */}
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <h2 className="text-lg font-semibold text-white">
+                                                {p.title}
+                                            </h2>
 
-            {/* DESCRIPTION */}
-            <p className="text-sm text-white/85 leading-relaxed whitespace-pre-line">
-                {p.description}
-            </p>
+                                            <p className="text-xs text-white/70 mt-1">
+                                                {p.avail_opening} opening{p.avail_opening === 1 ? "" : "s"}
+                                                <span className="mx-2">•</span>
+                                                Closes {formatDate(p.closing_date)}
+                                            </p>
+                                        </div>
 
-            {/* SKILLS */}
-            <div className="flex flex-wrap gap-2">
-                {[
-                    ...(p.tech_skills || []),
-                    ...(p.soft_skills || []),
-                ].map((skill, index) => (
-                    <span
-                        key={`${skill}-${index}`}
-                        className="text-xs text-white/90 bg-white/15 border border-white/10 rounded-full px-3 py-1"
-                    >
-                        {skill}
-                    </span>
-                ))}
-            </div>
+                                        <p className="text-sm font-semibold text-white shrink-0">
+                                            {p.pay_range}
+                                        </p>
+                                    </div>
 
-            {/* BOTTOM RIGHT: DATE POSTED */}
-            <div className="flex justify-end mt-1">
-                <p className="text-[11px] text-white/50">
-                    Posted {formatDate(p.created_at)}
-                </p>
-            </div>
-            </div>
+                                    {/* DESCRIPTION */}
+                                    <p className="text-sm text-white/85 leading-relaxed whitespace-pre-line">
+                                        {p.description}
+                                    </p>
 
-            <button
-        type="button"
-        onClick={() => setViewingPosting(p)}
-        className="shrink-0 bg-[#5048c9] hover:bg-[#6058d9] text-white text-sm rounded-xl px-4 py-2 transition-colors"
-    >
-        View applicants
-    </button>
-        </li>
-    ))}
-</ul>
+                                    {/* SKILLS */}
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            ...(p.tech_skills || []),
+                                            ...(p.soft_skills || []),
+                                        ].map((skill, index) => (
+                                            <span
+                                                key={`${skill}-${index}`}
+                                                className="text-xs text-white/90 bg-white/15 border border-white/10 rounded-full px-3 py-1"
+                                            >
+                                                {skill}
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    {/* BOTTOM RIGHT: DATE POSTED */}
+                                    <div className="flex items-center justify-between mt-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => setViewingPosting(p)}
+                                            className="bg-[#5048c9] hover:bg-[#6058d9] text-white text-sm rounded-xl px-4 py-2 transition-colors"
+                                        >
+                                            View applicants
+                                        </button>
+                                        <p className="text-[11px] text-white/50">
+                                            Posted {formatDate(p.created_at)}
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                            </li>
+                        ))}
+                    </ul>
 
                 )}
             </main>
@@ -176,12 +176,12 @@ export default function Homepage() {
             {/* The popup form, only rendered while showForm is true */}
             {showForm && <PostJobModal onClose={() => setShowForm(false)} onPosted={loadPostings} />}
             {viewingPosting && (
-    <ViewApplicants
-        postingId={viewingPosting.id}
-        title={viewingPosting.title}
-        onClose={() => setViewingPosting(null)}
-    />
-)}
+                <ViewApplicants
+                    postingId={viewingPosting.id}
+                    title={viewingPosting.title}
+                    onClose={() => setViewingPosting(null)}
+                />
+            )}
         </div>
     );
 }
