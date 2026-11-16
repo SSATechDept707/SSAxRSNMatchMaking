@@ -1,17 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import PostJobModal from "./PostJobModal";
+import ViewApplicants from "./ViewApplicantsModal";
 
 type Tab = "jobs" | "applicants";
 
 type Posting = {
     id: number;
     title: string;
+    description: string;
     pay_range: string;
     avail_opening: number;
     closing_date: string;
     posting_status: string;
+    tech_skills?: string[];
+    soft_skills?: string[];
+    created_at: string;
 };
+
 
 // dd/mm/yyyy in Singapore time
 const formatDate = (iso: string) =>
@@ -23,6 +29,7 @@ export default function Homepage() {
     const [tab, setTab] = useState<Tab>("jobs");
     const [postings, setPostings] = useState<Posting[]>([]);
     const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
+    const [viewingPosting, setViewingPosting] = useState<Posting | null>(null);
 
     const loadPostings = useCallback(async () => {
         try {
@@ -98,12 +105,13 @@ export default function Homepage() {
                 )}
                 {tab === "jobs" && loadState === "ready" && postings.length > 0 && (
                     
-<ul className="flex flex-col gap-4 max-w-[900px]">
+<ul className="flex flex-col gap-4 max-w-[1100px]">
     {postings.map((p) => (
-        <li
-            key={p.id}
-            className="bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-5 flex flex-col gap-4"
-        >
+
+       <li key={p.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
+       {/* the card */}
+       <div className="flex-1 min-w-0 bg-white/20 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-5 flex flex-col gap-4">
+   
             {/* TOP ROW: TITLE + PAY RANGE */}
             <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -149,6 +157,15 @@ export default function Homepage() {
                     Posted {formatDate(p.created_at)}
                 </p>
             </div>
+            </div>
+
+            <button
+        type="button"
+        onClick={() => setViewingPosting(p)}
+        className="shrink-0 bg-[#5048c9] hover:bg-[#6058d9] text-white text-sm rounded-xl px-4 py-2 transition-colors"
+    >
+        View applicants
+    </button>
         </li>
     ))}
 </ul>
