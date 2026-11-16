@@ -78,7 +78,7 @@ export default function ViewApplicantsModal({
                     Applicants: {title}
                 </h1>
     
-                <div className="bg-white/20 text-gray-800 rounded-2xl p-6 overflow-auto">
+                <div className="bg-white text-gray-800 rounded-2xl p-6">
                     {loading && <p>Loading…</p>}
                     {error && <p className="text-red-600">{error}</p>}
                     {!loading && !error && applicants.length === 0 && <p>No applicants yet.</p>}
