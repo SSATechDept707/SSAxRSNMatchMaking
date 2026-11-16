@@ -58,13 +58,12 @@ export default function Homepage() {
                     alt="Singapore Shipping Association"
                     className="h-[48px] w-auto object-contain"
                 />
-                <div className="flex flex-col items-center gap-1 text-gray-700">
-                    <div className="h-[60px] w-[60px] rounded-full bg-gray-200" />
+       
+       <div className="h-[60px] w-[60px] rounded-full bg-gray-200" />
                     <span className="text-xs font-semibold">Hello, user</span>
                     <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
                         Log out
                     </button>
-                </div>
             </header>
 
             {/* Title */}
