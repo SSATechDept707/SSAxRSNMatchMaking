@@ -52,19 +52,23 @@ export default function Homepage() {
     return (
         <div className="min-h-screen w-full flex flex-col bg-[#262261] text-white">
             {/* Header: logo left, greeting right */}
-            <header className="flex items-start bg-white justify-between px-[clamp(1.5rem,5vw,4.5rem)] py-3">
-                <img
-                    src="/images/SSA-logo.png"
-                    alt="Singapore Shipping Association"
-                    className="h-[48px] w-auto object-contain"
-                />
-       
-       <div className="h-[60px] w-[60px] rounded-full bg-gray-200" />
-                    <span className="text-xs font-semibold">Hello, user</span>
-                    <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
-                        Log out
-                    </button>
-            </header>
+            <header className="relative flex items-center bg-white justify-between px-[clamp(1.5rem,5vw,4.5rem)] h-[72px]">
+
+<img
+    src="/images/SSA-logo.png"
+    alt="Singapore Shipping Association"
+    className="h-[48px] w-auto object-contain"
+/>
+
+<div className="absolute right-[clamp(1.5rem,5vw,4.5rem)] top-3 flex flex-col items-center text-gray-700 z-10">
+    <div className="h-[60px] w-[60px] rounded-full bg-gray-200" />
+    <span className="text-xs font-semibold">Hello, user</span>
+    <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
+        Log out
+    </button>
+</div>
+
+</header>
 
             {/* Title */}
             <nav className="flex items-center gap-3 px-[clamp(1.5rem,5vw,4.5rem)] mt-6">
