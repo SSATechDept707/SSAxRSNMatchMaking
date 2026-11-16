@@ -61,7 +61,6 @@ export default function Homepage() {
 />
 
 <div className="absolute right-[clamp(1.5rem,5vw,4.5rem)] top-3 flex flex-col items-center text-gray-700 z-10">
-    <div className="h-[60px] w-[60px] rounded-full bg-gray-200" />
     <span className="text-xs font-semibold">Hello, user</span>
     <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
         Log out
