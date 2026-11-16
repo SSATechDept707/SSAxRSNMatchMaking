@@ -54,23 +54,32 @@ export default function Homepage() {
             {/* Header: logo left, greeting right */}
             <header className="relative flex items-center bg-white justify-between px-[clamp(1.5rem,5vw,4.5rem)] h-[72px]">
 
-<img
-    src="/images/SSA-logo.png"
-    alt="Singapore Shipping Association"
-    className="h-[48px] w-auto object-contain"
-/>
+                <img
+                    src="/images/SSA-logo.png"
+                    alt="Singapore Shipping Association"
+                    className="h-[48px] w-auto object-contain"
+                />
 
-<div className="absolute right-[clamp(1.5rem,5vw,4.5rem)] top-3 flex flex-col items-center text-gray-700 z-10">
-    <span className="text-xs font-semibold">Hello, user</span>
-    <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
-        Log out
-    </button>
-</div>
+                <div className="absolute right-[clamp(1.5rem,5vw,4.5rem)] top-3 flex flex-col items-center text-gray-700 z-10">
+                    <span className="text-xs font-semibold">Hello, user</span>
+                    <button type="button" onClick={logout} className="text-[11px] underline text-gray-500">
+                        Log out
+                    </button>
+                </div>
 
-</header>
-
-            {/* Title */}
-            <nav className="flex items-center gap-3 px-[clamp(1.5rem,5vw,4.5rem)] mt-6">
+            </header>
+            {viewingPosting ? (
+    <main className="flex-1 px-[clamp(1.5rem,5vw,4.5rem)] py-6">
+        <ViewApplicantsModal
+            postingId={viewingPosting.id}
+            title={viewingPosting.title}
+            onBack={() => setViewingPosting(null)}
+        />
+    </main>
+) : (
+    <>
+         {/* Title */}
+         <nav className="flex items-center gap-3 px-[clamp(1.5rem,5vw,4.5rem)] mt-6">
                 <h1 className="text-[clamp(16px,1.6vw,22px)] font-semibold text-white">Jobs Posted</h1>
             </nav>
 
@@ -148,16 +157,12 @@ export default function Homepage() {
                     </ul>
                 )}
             </main>
+    </>
+)}
 
             {/* Popups */}
             {showForm && <PostJobModal onClose={() => setShowForm(false)} onPosted={loadPostings} />}
-            {viewingPosting && (
-                <ViewApplicantsModal
-                    postingId={viewingPosting.id}
-                    title={viewingPosting.title}
-                    onClose={() => setViewingPosting(null)}
-                />
-            )}
+
         </div>
     );
 }
