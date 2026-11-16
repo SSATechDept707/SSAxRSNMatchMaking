@@ -179,12 +179,18 @@ export default function Homepage() {
             {/* The popup form, only rendered while showForm is true */}
             {showForm && <PostJobModal onClose={() => setShowForm(false)} onPosted={loadPostings} />}
             {viewingPosting && (
-                <ViewApplicants
-                    postingId={viewingPosting.id}
-                    title={viewingPosting.title}
-                    onClose={() => setViewingPosting(null)}
-                />
-            )}
+    <div className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center">
+        <div className="bg-white text-black p-10 rounded-xl">
+            <h1>Applicants Modal</h1>
+            <p>Posting ID: {viewingPosting.id}</p>
+            <p>Title: {viewingPosting.title}</p>
+
+            <button onClick={() => setViewingPosting(null)}>
+                Close
+            </button>
+        </div>
+    </div>
+)}
         </div>
     );
 }
