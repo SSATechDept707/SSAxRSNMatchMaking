@@ -154,7 +154,10 @@ export default function Homepage() {
                                     <div className="flex items-center justify-between mt-1">
                                         <button
                                             type="button"
-                                            onClick={() => setViewingPosting(p)}
+                                            onClick={() => {
+                                                console.log("clicked", p.id);
+                                                setViewingPosting(p);
+                                            }}
                                             className="bg-[#5048c9] hover:bg-[#6058d9] text-white text-sm rounded-xl px-4 py-2 transition-colors"
                                         >
                                             View applicants
