@@ -56,8 +56,11 @@ export default async function handler(req, res) {
       }
 
       case "GET": {
+        if (req.query.companies) {
+          return res.status(200).json(await getListOfCompanies(sql));
+        }
+      
         const me = await getMember(sql, req);
-        // rep: list every account in the company (use ?accounts=true to see pending ones)
         if (req.query.accounts) return res.status(200).json(await listCompanyAccounts(sql, me));
         return res.status(200).json(await getMemberById(sql, me.id));
       }
@@ -167,6 +170,15 @@ async function approveNewCompanyAccount(sql, me, accountId) {
     RETURNING id, company_id, email, is_rep, approved`;
   if (!row) throw httpError(404, "Account not found");
   return row;
+}
+// get list of company members
+async function getListOfCompanies(sql) {
+  const rows = await sql`
+  SELECT *
+  FROM member_companies
+  ORDER BY name
+  `;
+  return rows;
 }
 
 // get profile: the account plus its company details

@@ -3,6 +3,8 @@ import type { LucideIcon } from "lucide-react";
 import { ChartPie, BadgeCheck, UserCog, Plus  } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import VerifyUsers from "./VerifyUsers";
+import ManageUsers from "./ManageUsers";
+import CreateAdminModal from "./CreateAdminModal";
 
 type Section = "data" | "verify" | "manage" | "addAdmin";
 
