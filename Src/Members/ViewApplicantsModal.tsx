@@ -78,12 +78,12 @@ export default function ViewApplicantsModal({
                     Applicants: {title}
                 </h1>
     
-                <div className="bg-white text-gray-800 rounded-2xl p-6">
+                <div className="text-gray-800">
                     {loading && <p>Loading…</p>}
                     {error && <p className="text-red-600">{error}</p>}
                     {!loading && !error && applicants.length === 0 && <p>No applicants yet.</p>}
                     {!loading && !error && applicants.length > 0 && (
-                         <table className="min-w-full text-sm border-collapse">
+                         <table className="min-w-full text-sm bg-white  border-collapse">
                          <thead className="bg-gray-100 sticky top-0">
                              <tr>
                                  {["Name", "Age", "Past role", "Status", "Interviewed", "Reason"].map((h) => (
