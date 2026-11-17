@@ -80,7 +80,7 @@ export default function Homepage() {
     <>
          {/* Title */}
          <nav className="flex items-center gap-3 px-[clamp(1.5rem,5vw,4.5rem)] mt-6">
-                <h1 className="text-[clamp(16px,1.6vw,22px)] font-semibold text-white">Jobs Posted</h1>
+                <h1 className="font-semibold text-white">Jobs Posted</h1>
             </nav>
 
             {/* Add posting button */}
