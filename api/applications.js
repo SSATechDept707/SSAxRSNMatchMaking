@@ -2,7 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import { decrypt } from "./lib/crypto.js";
 import { requireSession } from "./lib/session.js";
 
-const STATUSES = ["pending", "accepted", "rejected"]; // adjust to the values you use
+const STATUSES = ["pending", "hired", "shortlisted", "rejected"]; // adjust to the values you use
 const VERIFIED = "verified"; // same value CandidateHome checks
 const NA = "Not applicable"; // see the note below about the default in your table
 
