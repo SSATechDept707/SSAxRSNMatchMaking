@@ -49,6 +49,7 @@ export default function Dashboard() {
                 <aside className="w-[clamp(200px,20vw,280px)] shrink-0 bg-[#262261] p-4 flex flex-col gap-2">
                     {NAV.map((item) => (
                         <button key={item.key} onClick={() => setSection(item.key)} className={itemClass(item.key)}>
+                        {item.label}
                         </button>
                     ))}
 
@@ -65,9 +66,7 @@ export default function Dashboard() {
 
                 {/* content area */}
                 <main className="flex-1 bg-gray-100 p-8 overflow-y-auto">
-    <h1 className="text-xl font-semibold mb-4">
-        {NAV.find((n) => n.key === section)?.label}
-    </h1>
+
 
     {section === "verify" && <VerifyUsers />}
     {section === "manage" && <UserManagement />}
