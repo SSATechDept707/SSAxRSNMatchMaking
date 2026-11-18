@@ -57,7 +57,7 @@ export default function CreateUserModal({ onClose, onSuccess}: UserProps) {
                     }),
                 });
             } else if (userType === "member") {
-                fetch("/api/members", {
+             res = await fetch("/api/members", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
