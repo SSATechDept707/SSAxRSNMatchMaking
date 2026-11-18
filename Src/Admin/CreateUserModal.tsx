@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, UserRound, Building2 } from "lucide-react"
+import { X, UserRound, Building2 } from "lucide-react";
 
 type UserType = "member" | "candidate";
 
