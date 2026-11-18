@@ -5,7 +5,7 @@ import { useAuth } from "../auth/AuthContext";
 import VerifyUsers from "./VerifyUsers";
 import ManageUsers from "./ManageUsers";
 import CreateAdminModal from "./CreateAdminModal";
-import UserManagement from "./Admin/ManageUsers";
+import UserManagement from "./ManageUsers";
 
 type Section = "data" | "verify" | "manage" | "addAdmin";
 
