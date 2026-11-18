@@ -19,7 +19,7 @@ export default function ManageUsers() {
     async function getUsers() {
         try {
             setLoading(true);
-            senError("");
+            setError("");
 
             const [candidateRes, memberRes] = await Promise.all([
                 fetch("/api/candidates"),
