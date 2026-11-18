@@ -54,29 +54,6 @@ export default function ManageUsers() {
     return (
         <div className="min-h-screen w-full flex flex-col bg-[#F7F7FB]">
 
-            {/* NAVIGATION */}
-            <header className="relative flex items-center bg-white justify-between px-[clamp(1.5rem,5vw,4.5rem)] h-[72px]">
-
-                <img
-                    src="/images/SSA-logo.png"
-                    alt="Singapore Shipping Association"
-                    className="h-[48px] w-auto object-contain"
-                />
-
-                <div className="absolute right-[clamp(1.5rem,5vw,4.5rem)] top-3 flex flex-col items-center text-gray-700 z-10">
-                    <span className="text-xs font-semibold">Hello, user</span>
-
-                    <button
-                        type="button"
-                        onClick={logout}
-                        className="text-[11px] underline text-gray-500"
-                    >
-                        Log out
-                    </button>
-                </div>
-
-            </header>
-
             {/* PAGE CONTENT */}
             <main className="flex-1 px-[clamp(1.5rem,5vw,4.5rem)] py-10">
 
