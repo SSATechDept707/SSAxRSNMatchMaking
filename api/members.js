@@ -21,7 +21,7 @@ function checkPassword(p) {
 // Loads the logged-in account from the DB on every request, so a deleted or
 // unapproved account stops working immediately even if its cookie is still valid.
 async function getMember(sql, req) {
-  const { accountId } = requireSession(req, "member" | "admin");
+  const { accountId } = requireSession(req, "member");
   const [acct] = await sql`
     SELECT id, company_id, email, is_rep, approved
     FROM company_accounts WHERE id = ${accountId}`;
@@ -61,6 +61,7 @@ export default async function handler(req, res) {
         }
       
         const me = await getMember(sql, req);
+        
         if (req.query.accounts) return res.status(200).json(await listCompanyAccounts(sql, me));
         return res.status(200).json(await getMemberById(sql, me.id));
       }
