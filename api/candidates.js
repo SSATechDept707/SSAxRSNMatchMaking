@@ -38,7 +38,7 @@ function parsePastJobRole(value) {
 // Assumes your admin session is { role: "admin", ... }. Adjust if yours differs.
 function getActor(req) {
   try {
-    const s = requireSession(req, "candidate");
+    const s = requireSession(req, "candidate"  | "admin");
     return { role: "candidate", candidateId: s.candidateId };
   } catch {
     /* not a candidate, try admin */
