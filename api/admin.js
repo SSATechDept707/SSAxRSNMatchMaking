@@ -134,6 +134,28 @@ async function loginAdmin(sql, { email, password }) {
   return { ...publicAdmin(admin), email: e };
 }
 
+
+async function createAdmin(sql, { email, password, companyId, role, username }) {
+  if (!email || !password || !username) throw httpError(400, "Missing fields");
+  checkPassword(password);
+
+  const normalized = normEmail(email);
+  if (!normalized.includes("@")) throw httpError(400, "Invalid email");
+
+  const hash = await bcrypt.hash(password, 10);
+
+  const [row] = await sql`
+    INSERT INTO admins (email, passwd, company_id, role, username)
+    VALUES (
+      ${normalized},
+      ${hash},
+      ${companyId ?? null},
+      "Admin",
+      ${username.trim()}
+    )
+    RETURNING id, email, company_id, role, username`;
+  return row;
+}
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Shared queries
 /////////////////////////////////////////////////////////////////////////////////////////////
