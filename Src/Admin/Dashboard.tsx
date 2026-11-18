@@ -49,7 +49,6 @@ export default function Dashboard() {
                 <aside className="w-[clamp(200px,20vw,280px)] shrink-0 bg-[#262261] p-4 flex flex-col gap-2">
                     {NAV.map((item) => (
                         <button key={item.key} onClick={() => setSection(item.key)} className={itemClass(item.key)}>
-                            {item.label}
                         </button>
                     ))}
 

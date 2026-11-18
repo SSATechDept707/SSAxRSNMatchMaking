@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, UserRound, Building2 } from "lucide-react";
+import { X, UserRound, Building2, PartyPopper } from "lucide-react";
 
 type UserType = "member" | "candidate";
 
@@ -32,10 +32,10 @@ export default function CreateUserModal({ onClose, onSuccess}: UserProps) {
     });
 
     async function createUser(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         setLoading(true);
         setError("");
         setSuccess("");
-        e.preventDefault();
 
 
         try {
@@ -82,7 +82,7 @@ export default function CreateUserModal({ onClose, onSuccess}: UserProps) {
             }
 
             setSuccess("User created successfully!");
-
+            setTimeout(onSuccess, 1500);
         } catch (e) {
             setError(
                 e instanceof Error ? e.message : "Something went wrong"
@@ -91,7 +91,7 @@ export default function CreateUserModal({ onClose, onSuccess}: UserProps) {
         } finally {
             setLoading(false);
 
-            //pop up disappears
+
         }
     }
 
@@ -127,7 +127,15 @@ return (
                 </button>
 
             </div>
-
+            {success ? (
+    <div className="p-10 flex flex-col items-center text-center gap-3">
+        <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
+            <PartyPopper size={36} className="text-green-600" />
+        </div>
+        <h3 className="text-lg font-bold text-[#262261]">User created Successfully</h3>
+        <p className="text-sm text-gray-500">{success}</p>
+    </div>
+) : (
             <form onSubmit={createUser} className="p-6 space-y-5">
 
                 {/* ACCOUNT TYPE */}
@@ -214,7 +222,7 @@ return (
                             max="100"
                             value={form.age}
                             onChange={handleChange}
-                            placeholder="Age (Optional)"
+                            placeholder="Age "
                             className="w-full border rounded-lg p-3 text-sm"
                         />
 
@@ -222,7 +230,7 @@ return (
                             name="pastJobRole"
                             value={form.pastJobRole}
                             onChange={handleChange}
-                            placeholder="Past Job Role (Optional)"
+                            placeholder="Past Job Role"
                             className="w-full border rounded-lg p-3 text-sm"
                         />
 
@@ -349,7 +357,7 @@ return (
                 </div>
 
             </form>
-
+)}
         </div>
 
     </div>
