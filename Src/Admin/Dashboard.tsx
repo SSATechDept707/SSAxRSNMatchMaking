@@ -5,6 +5,7 @@ import { useAuth } from "../auth/AuthContext";
 import VerifyUsers from "./VerifyUsers";
 import ManageUsers from "./ManageUsers";
 import CreateAdminModal from "./CreateAdminModal";
+import UserManagement from "./Admin/ManageUsers";
 
 type Section = "data" | "verify" | "manage" | "addAdmin";
 
@@ -70,6 +71,7 @@ export default function Dashboard() {
     </h1>
 
     {section === "verify" && <VerifyUsers />}
+    {section === "manage" && <UserManagement />}
 </main>
             </div>
         </div>
