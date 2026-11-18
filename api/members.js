@@ -177,7 +177,7 @@ async function getListOfCompanies(sql) {
   const rows = await sql`
   SELECT *
   FROM member_companies
-  ORDER BY comapany_name
+  ORDER BY company_name
   `;
   return rows;
 }
