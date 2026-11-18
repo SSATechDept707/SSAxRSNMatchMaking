@@ -14,26 +14,37 @@ const [error, setError]  = useState("");
    async function getUsers() {
        try { 
         setLoading(true);
+        senError("");
 
-        const [candidateRes, MemberRes] = await Promise.all([
+        const [candidateRes, memberRes] = await Promise.all([
             fetch("/api/candidates"),
             fetch("/api/members"),
         ]);
 
 
-        if(!candidateRes.ok || !MemberRes.ok) {
+        if(!candidateRes.ok || !memberRes.ok) {
             throw new Error("Failed to load users");
         }
 
-        const candidatedata = await candidateRes.json();
-        const memberCompan
+        const candidateData = await candidateRes.json();
+        const memberCompanyData = await memberRes.json();
+
+
+        setCandidates(candidateData);
+        setMembers(memberCompanyData);
     
     } catch (e) {
-
+        console.error(e);
+        setError("Unable to load users.");
+    } finally {
+        setLoading(false);
     }
     }
 
 
+    useEffect(() => {
+        getUsers();
+    })
 
     return (
         <div>

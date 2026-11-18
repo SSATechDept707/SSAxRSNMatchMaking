@@ -134,7 +134,7 @@ export default async function handler(req, res) {
 }
 
 async function createCandidate({ name, email, password, age, pastJobRole, prefName }) {
-  if (!name?.trim() || !email?.trim() || !password || !prefName.trim()) {
+  if (!name?.trim() || !email?.trim() || !password || !prefName?.trim()) {
     throw httpError(400, "Name, email and password are required");
   }
   const normalizedEmail = email.trim().toLowerCase();
