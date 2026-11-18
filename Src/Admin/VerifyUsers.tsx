@@ -65,7 +65,11 @@ export default function VerifyUsers() {
     }
 
     return (
+        
         <div className="max-w-3xl">
+              <h1 className="text-2xl font-bold text-[#262261]">
+                          Verify Users
+                        </h1>
             <p className="text-sm text-gray-500 mb-4">
                 {users.length} candidate{users.length === 1 ? "" : "s"} waiting for verification
             </p>
@@ -89,6 +93,7 @@ export default function VerifyUsers() {
                     {users.map((u) => {
                         const busy = busyId === u.id;
                         return (
+                            
                             <li
                                 key={u.id}
                                 className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-sm"

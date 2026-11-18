@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Users, Building2, Plus, Search } from "lucide-react";
+import { Users, Building2, Plus, Search,Trash } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import CreateUserModal from "./CreateUserModal";
 
