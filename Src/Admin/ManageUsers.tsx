@@ -15,7 +15,7 @@ export default function ManageUsers() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [activeTab, setActiveTab] = useState<"candidates" | "members">("candidates");
 
-
+    const formatDate = (d: string) => (d ? new Date(d).toLocaleDateString() : "-");
     async function getUsers() {
         try {
             setLoading(true);
@@ -168,16 +168,91 @@ export default function ManageUsers() {
 
                     </div>
 
-                    {/* TABLE PLACEHOLDER */}
-                    <div className="p-6 text-center text-gray-400 text-sm">
-                        {loading
-                            ? "Loading users..."
-                            : error
-                                ? error
-                                : "User records will appear here."
-                        }
-                    </div>
+                    <div className="overflow-x-auto">
 
+{loading ? (
+    <div className="p-8 text-center text-gray-400 text-sm">
+        Loading users...
+    </div>
+) : error ? (
+    <div className="p-8 text-center text-red-500 text-sm">
+        {error}
+    </div>
+) : (
+    <table className="w-full text-sm text-left">
+
+<thead className="bg-gray-50 text-gray-500 uppercase text-xs whitespace-nowrap">
+    {activeTab === "candidates" ? (
+        <tr>
+            <th className="px-6 py-4">ID</th>
+            <th className="px-6 py-4">Full Name</th>
+            <th className="px-6 py-4">Preferred Name</th>
+            <th className="px-6 py-4">Email</th>
+            <th className="px-6 py-4">Age</th>
+            <th className="px-6 py-4">Past Role</th>
+            <th className="px-6 py-4">Verification</th>
+            <th className="px-6 py-4">Created</th>
+            <th className="px-6 py-4">Actions</th>
+        </tr>
+    ) : (
+        <tr>
+            <th className="px-6 py-4">ID</th>
+            <th className="px-6 py-4">Logo</th>
+            <th className="px-6 py-4">Company</th>
+            <th className="px-6 py-4">UEN</th>
+            <th className="px-6 py-4">Location</th>
+            <th className="px-6 py-4">Rep Name</th>
+            <th className="px-6 py-4">Rep Email</th>
+            <th className="px-6 py-4">Company Email</th>
+            <th className="px-6 py-4">CV Recipient</th>
+            <th className="px-6 py-4">Created</th>
+            <th className="px-6 py-4">Actions</th>
+        </tr>
+    )}
+</thead>
+
+<tbody className="divide-y divide-gray-100 whitespace-nowrap">
+    {activeTab === "candidates" ? (
+        candidates.map((c) => (
+            <tr key={c.id}>
+                <td className="px-6 py-4 text-gray-600">{c.id}</td>
+                <td className="px-6 py-4 font-medium text-gray-800">{c.full_name}</td>
+                <td className="px-6 py-4 text-gray-600">{c.preferred_name}</td>
+                <td className="px-6 py-4 text-gray-600">{c.email}</td>
+                <td className="px-6 py-4 text-gray-600">{c.age}</td>
+                <td className="px-6 py-4 text-gray-600">{c.past_role}</td>
+                <td className="px-6 py-4 text-gray-600">{c.verification_status}</td>
+                <td className="px-6 py-4 text-gray-600">{formatDate(c.created_at)}</td>
+                <td className="px-6 py-4">{/* actions later */}</td>
+            </tr>
+        ))
+    ) : (
+        members.map((m) => (
+            <tr key={m.id}>
+                <td className="px-6 py-4 text-gray-600">{m.id}</td>
+                <td className="px-6 py-4">
+                    {m.logo_url ? (
+                        <img src={m.logo_url} alt="" className="h-8 w-8 object-contain" />
+                    ) : "-"}
+                </td>
+                <td className="px-6 py-4 font-medium text-gray-800">{m.company_name}</td>
+                <td className="px-6 py-4 text-gray-600">{m.uen}</td>
+                <td className="px-6 py-4 text-gray-600">{m.location}</td>
+                <td className="px-6 py-4 text-gray-600">{m.company_rep_name}</td>
+                <td className="px-6 py-4 text-gray-600">{m.company_rep_email}</td>
+                <td className="px-6 py-4 text-gray-600">{m.company_email ?? "-"}</td>
+                <td className="px-6 py-4 text-gray-600">{m.cv_recipient}</td>
+                <td className="px-6 py-4 text-gray-600">{formatDate(m.created_at)}</td>
+                <td className="px-6 py-4">{/* actions later */}</td>
+            </tr>
+        ))
+    )}
+</tbody>
+
+    </table>
+)}
+
+</div>
                 </div>
 
             </main>

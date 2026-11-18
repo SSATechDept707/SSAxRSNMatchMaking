@@ -174,7 +174,9 @@ async function getCandidateById(id) {
 // admin: all candidates, optionally filtered by verification_status
 async function listCandidates(status) {
   const rows = status
-    ? await sql`SELECT * FROM candidates WHERE verification_status = ${status} ORDER BY id DESC`
+    ? await sql`SELECT id, full_name, preferred_name, email, age, past_role,
+    verification_status, created_at
+    FROM candidates WHERE verification_status = ${status} ORDER BY id DESC`
     : await sql`SELECT * FROM candidates ORDER BY id DESC`;
   return rows.map(toPublic);
 }
