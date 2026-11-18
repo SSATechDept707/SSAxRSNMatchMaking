@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
-import CreateUserModal from "CreateUserModal";
+import CreateUserModal from "./CreateUserModal";
 
 
 
