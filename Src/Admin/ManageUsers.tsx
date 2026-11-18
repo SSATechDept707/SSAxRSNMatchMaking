@@ -23,7 +23,7 @@ export default function ManageUsers() {
 
             const [candidateRes, memberRes] = await Promise.all([
                 fetch("/api/candidates"),
-                fetch("/api/members"),
+                fetch("/api/members?companies=true"),
             ]);
 
 
@@ -49,7 +49,7 @@ export default function ManageUsers() {
 
     useEffect(() => {
         getUsers();
-    })
+      }, []);
 
     return (
         <div className="min-h-screen w-full flex flex-col bg-[#F7F7FB]">
