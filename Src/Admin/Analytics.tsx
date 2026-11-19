@@ -25,6 +25,7 @@ function fillAges(rows: AgeRow[]) {
 // light pink → deep red, scaled between the smallest and largest value
 const LIGHT = [254, 226, 226];
 const DEEP = [153, 27, 27];
+console.log(submitted, min, max);
 function shade(value: number, min: number, max: number) {
     const t = max === min ? 0.6 : (value - min) / (max - min);
     const c = LIGHT.map((l, i) => Math.round(l + (DEEP[i] - l) * t));
