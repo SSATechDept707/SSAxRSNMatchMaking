@@ -25,7 +25,6 @@ function fillAges(rows: AgeRow[]) {
 // light pink → deep red, scaled between the smallest and largest value
 const LIGHT = [254, 226, 226];
 const DEEP = [153, 27, 27];
-console.log(submitted, min, max);
 function shade(value: number, min: number, max: number) {
     const t = max === min ? 0.6 : (value - min) / (max - min);
     const c = LIGHT.map((l, i) => Math.round(l + (DEEP[i] - l) * t));
@@ -128,7 +127,7 @@ export default function Analytics() {
     const counts = submitted.map((a) => a.candidates);
     const min = Math.min(...counts);
     const max = Math.max(...counts);
-
+    console.log(submitted, min, max);
     const yesRow: Record<string, string | number> = { name: "Yes" };
     submitted.forEach((a) => { yesRow[`a${a.applications}`] = a.candidates; });
     const barData = [yesRow, { name: "No", none: notSubmitted }];
