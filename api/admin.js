@@ -19,9 +19,7 @@ function parseId(value) {
 
 const normEmail = (e) => String(e ?? "").trim().toLowerCase();
 
-function checkPassword(p) {
-  if (String(p ?? "").length < 8) throw httpError(400, "Password must be at least 8 characters");
-}
+
 const optionalId = (v) => (v === undefined || v === null || v === "" ? null : parseId(v));
 
 function optionalBool(v) {
