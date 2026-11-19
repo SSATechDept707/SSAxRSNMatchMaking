@@ -131,7 +131,7 @@ export default function CreateAdminModal({ onClose, onSuccess }: Props) {
                         </div>
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">
-                                Member company (only applicable if user's company is a member)
+                               Company (only applicable if user's company is a member)
                             </label>
                             <select
                                 name="companyId"
@@ -139,7 +139,7 @@ export default function CreateAdminModal({ onClose, onSuccess }: Props) {
                                 onChange={handleChange}
                                 className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
                             >
-                                <option value="">Not a member company</option>
+                                <option value="" disabled>Not Applicable</option>
                                 {companyDropdown.map((c) => (
                                     <option key={c.id} value={c.id}>{c.company_name}</option>
                                 ))}

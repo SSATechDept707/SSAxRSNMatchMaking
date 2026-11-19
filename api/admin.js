@@ -317,18 +317,18 @@ async function listAdmins(sql) {
   return rows.map(publicAdmin);
 }
 
-// { username, email, password, role? }
-async function createAdmin(sql, { username, email, password, role }) {
-  if (!String(username ?? "").trim()) throw httpError(400, "Username is required");
-  const e = checkEmail(email);
-  checkPassword(password);
+// // { username, email, password, role? }
+// async function createAdmin(sql, { username, email, password, role }) {
+//   if (!String(username ?? "").trim()) throw httpError(400, "Username is required");
+//   const e = checkEmail(email);
+//   checkPassword(password);
 
-  const [row] = await sql`
-    INSERT INTO admins (username, email, email_lookup, passwd, role)
-    VALUES (${username.trim()}, ${encrypt(e)}, ${hashEmail(e)}, ${await bcrypt.hash(password, 10)}, ${role ?? null})
-    RETURNING *`;
-  return publicAdmin(row);
-}
+//   const [row] = await sql`
+//     INSERT INTO admins (username, email, email_lookup, passwd, role)
+//     VALUES (${username.trim()}, ${encrypt(e)}, ${hashEmail(e)}, ${await bcrypt.hash(password, 10)}, ${role ?? null})
+//     RETURNING *`;
+//   return publicAdmin(row);
+// }
 
 // { adminId, username?, email?, role?, newPassword?, currentPassword? }
 // changing your own password needs currentPassword
