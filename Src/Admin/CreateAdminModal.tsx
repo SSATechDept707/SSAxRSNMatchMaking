@@ -24,8 +24,8 @@ export default function CreateAdminModal({ onClose, onSuccess }: Props) {
     useEffect(() => {
         fetch("/api/admin?companies=true")
             .then((r) => (r.ok ? r.json() : []))
-            .then(setCompanies)
-            .catch(() => setCompanies([]));
+            .then(setCompanyDropdown)
+            .catch(() => setCompanyDropdown([]));
     }, [])
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
@@ -140,7 +140,7 @@ export default function CreateAdminModal({ onClose, onSuccess }: Props) {
                                 className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
                             >
                                 <option value="">Not a member company</option>
-                                {companies.map((c) => (
+                                {companyDropdown.map((c) => (
                                     <option key={c.id} value={c.id}>{c.company_name}</option>
                                 ))}
                             </select>
