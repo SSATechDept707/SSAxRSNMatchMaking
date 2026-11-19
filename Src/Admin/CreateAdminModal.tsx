@@ -14,7 +14,7 @@ export default function CreateAdminModal({ onClose, onSuccess}: Props) {
         email: "",
         password: "",
         email: "",
-        company_id?: "",
+       // company_id?: "",
         username: "",
         pastJobRole: "",
     });
