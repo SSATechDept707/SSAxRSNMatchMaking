@@ -1,33 +1,43 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { X, PartyPopper } from "lucide-react";
 
 type Props = {
     onClose: () => void;
     onSuccess: () => void;
 }
-export default function CreateAdminModal({ onClose, onSuccess}: Props) {
+export default function CreateAdminModal({ onClose, onSuccess }: Props) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [companyDropdown, setCompanyDropdown] = useState<{ id: number; company_name }[]>([]);
 
     const [form, setForm] = useState({
         email: "",
         password: "",
         email: "",
-       // company_id?: "",
+        // company_id?: "",
         username: "",
         pastJobRole: "",
     });
 
 
-function handleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    const {name, value} = e.target;
+    useEffect(() => {
+        fetch("/api/admin?companies=true")
+            .then((r) => (r.ok ? r.json() : []))
+            .then(setCompanies)
+            .catch(() => setCompanies([]));
+    }, [])
 
-    setForm(prev => ({
-        ...prev,
-        [name]: value,
-    }));
-}
+    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+        const { name, value } = e.target;
+
+        setForm(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    }
+
+
 
     async function createAdmin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -35,35 +45,35 @@ function handleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement
         setError("");
         setSuccess("");
 
-      try {  
-        const res = await fetch("/api/admin?action=createAdmin", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ action: "createAdmin", ...form }),
-        })
+        try {
+            const res = await fetch("/api/admin?action=createAdmin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ action: "createAdmin", ...form }),
+            })
 
-        const data = await res.json();
-        if (!res.ok) {
-            throw new Error(data.error || "Failed to create Admin");
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.error || "Failed to create Admin");
+            }
+
+            setSuccess("User created successfully!");
+            setTimeout(onSuccess, 1500);
+
+        } catch (e) {
+            setError(
+                e instanceof Error ? e.message : "Something went wrong"
+            );
+
+        } finally {
+            setLoading(false);
+
         }
-
-        setSuccess("User created successfully!");
-        setTimeout(onSuccess, 1500);
-
-    } catch (e) {
-        setError(
-            e instanceof Error ? e.message : "Something went wrong"
-        );
-
-    } finally {
-        setLoading(false);
-
-    }
     }
 
-   return (
+    return (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-[480px] max-h-[90vh] overflow-y-auto">
 
@@ -95,19 +105,6 @@ function handleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement
 
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">
-                                Username
-                            </label>
-                            <input
-                                name="username"
-                                value={form.username}
-                                onChange={handleChange}
-                                required
-                                className="w-full border rounded-lg px-3 py-2 text-sm"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-600 mb-1">
                                 Email
                             </label>
                             <input
@@ -122,22 +119,35 @@ function handleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement
 
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">
-                                Role
+                                Username
+                            </label>
+                            <input
+                                name="username"
+                                value={form.username}
+                                onChange={handleChange}
+                                required
+                                className="w-full border rounded-lg px-3 py-2 text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-600 mb-1">
+                                Member company (only applicable if user's company is a member)
                             </label>
                             <select
-                                name="role"
-                                value={form.role}
+                                name="companyId"
+                                value={form.companyId}
                                 onChange={handleChange}
                                 className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
                             >
-                                <option value="Admin">Admin</option>
-                                {/* add other roles your system uses */}
+                                <option value="">Not a member company</option>
+                                {companies.map((c) => (
+                                    <option key={c.id} value={c.id}>{c.company_name}</option>
+                                ))}
                             </select>
                         </div>
-
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">
-                                Temporary Password
+                                Password
                             </label>
                             <input
                                 name="password"

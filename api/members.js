@@ -2,36 +2,6 @@ import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
 import { setSession, requireSession } from "./lib/session.js";
 
-function httpError(status, message) {
-  return Object.assign(new Error(message), { status });
-}
-
-function parseId(value) {
-  const id = Number(value);
-  if (!Number.isInteger(id) || id < 1) throw httpError(400, "Invalid id");
-  return id;
-}
-
-const normEmail = (e) => String(e ?? "").trim().toLowerCase();
-
-function checkPassword(p) {
-  if (String(p ?? "").length < 8) throw httpError(400, "Password must be at least 8 characters");
-}
-
-// Loads the logged-in account from the DB on every request, so a deleted or
-// unapproved account stops working immediately even if its cookie is still valid.
-async function getMember(sql, req) {
-  const { accountId } = requireSession(req, "member");
-  const [acct] = await sql`
-    SELECT id, company_id, email, is_rep, approved
-    FROM company_accounts WHERE id = ${accountId}`;
-  if (!acct || !acct.approved) throw httpError(401, "Not logged in");
-  return acct;
-}
-
-function requireRep(acct) {
-  if (!acct.is_rep) throw httpError(403, "Only the company representative can do this");
-}
 
 export default async function handler(req, res) {
   const sql = neon(process.env.DATABASE_URL);
@@ -99,6 +69,38 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Server error" });
   }
 }
+
+function httpError(status, message) {
+  return Object.assign(new Error(message), { status });
+}
+
+function parseId(value) {
+  const id = Number(value);
+  if (!Number.isInteger(id) || id < 1) throw httpError(400, "Invalid id");
+  return id;
+}
+
+const normEmail = (e) => String(e ?? "").trim().toLowerCase();
+
+function checkPassword(p) {
+  if (String(p ?? "").length < 8) throw httpError(400, "Password must be at least 8 characters");
+}
+
+// Loads the logged-in account from the DB on every request, so a deleted or
+// unapproved account stops working immediately even if its cookie is still valid.
+async function getMember(sql, req) {
+  const { accountId } = requireSession(req, "member");
+  const [acct] = await sql`
+    SELECT id, company_id, email, is_rep, approved
+    FROM company_accounts WHERE id = ${accountId}`;
+  if (!acct || !acct.approved) throw httpError(401, "Not logged in");
+  return acct;
+}
+
+function requireRep(acct) {
+  if (!acct.is_rep) throw httpError(403, "Only the company representative can do this");
+}
+
 
 // step 1: register a company together with its representative account
 async function registerCompany(sql, b) {

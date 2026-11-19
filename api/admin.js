@@ -65,11 +65,22 @@ function checkEmail(e) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
   const sql = neon(process.env.DATABASE_URL);
-  const { action, ...body } = req.body ?? {};
+
 
   try {
+    if (req.method === "GET") {
+      await requireAdmin(sql, req); // admins only
+
+      if (req.query.companies) {
+        return res.status(200).json(await getListOfCompanyNames(sql));
+      }
+      return res.status(400).json({ error: "Unknown request" });
+    }
+
+    if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+    const { action, ...body } = req.body ?? {};
     if (action === "login") {
       const admin = await loginAdmin(sql, body);
       setSession(res, { role: "admin", adminId: admin.id, adminRole: admin.role ?? null });
@@ -83,6 +94,8 @@ export default async function handler(req, res) {
     const fn = ACTIONS[action];
     if (!fn) return res.status(400).json({ error: "Unknown action" });
     return res.status(200).json(await fn(sql, body, adminId));
+
+
   } catch (e) {
     if (e.status) return res.status(e.status).json({ error: e.message });
     if (e.code === "23505") return res.status(409).json({ error: "That email or username is already in use" });
@@ -138,6 +151,14 @@ async function loginAdmin(sql, { email, password }) {
 }
 
 
+
+async function getListOfCompanyNames(sql) {
+  return await sql`
+    SELECT id, company_name
+    FROM member_companies
+    ORDER BY company_name`;
+}
+
 async function createAdmin(sql, { email, password, companyId, role, username }) {
   if (!email || !password || !username) throw httpError(400, "Missing fields");
   checkPassword(password);
@@ -146,14 +167,15 @@ async function createAdmin(sql, { email, password, companyId, role, username }) 
   if (!normalized.includes("@")) throw httpError(400, "Invalid email");
 
   const hash = await bcrypt.hash(password, 10);
+  const cid = companyId ? parseId(companyId) : null; // "" or null → null
 
   const [row] = await sql`
     INSERT INTO admins (email, passwd, company_id, role, username)
     VALUES (
       ${normalized},
       ${hash},
-      ${companyId ?? null},
-      "Admin",
+      ${cid ?? null},
+      'Admin',
       ${username.trim()}
     )
     RETURNING id, email, company_id, role, username`;
