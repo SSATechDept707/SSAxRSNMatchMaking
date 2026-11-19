@@ -128,6 +128,8 @@ export default function Analytics() {
     const min = Math.min(...counts);
     const max = Math.max(...counts);
     console.log(submitted, min, max);
+
+    
     const yesRow: Record<string, string | number> = { name: "Yes" };
     submitted.forEach((a) => { yesRow[`a${a.applications}`] = a.candidates; });
     const barData = [yesRow, { name: "No", none: notSubmitted }];
