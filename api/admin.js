@@ -17,6 +17,11 @@ function parseId(value) {
   return id;
 }
 
+const normEmail = (e) => String(e ?? "").trim().toLowerCase();
+
+function checkPassword(p) {
+  if (String(p ?? "").length < 8) throw httpError(400, "Password must be at least 8 characters");
+}
 const optionalId = (v) => (v === undefined || v === null || v === "" ? null : parseId(v));
 
 function optionalBool(v) {
@@ -104,22 +109,6 @@ export default async function handler(req, res) {
   }
 }
 
-
-function httpError(status, message) {
-  return Object.assign(new Error(message), { status });
-}
-
-function parseId(value) {
-  const id = Number(value);
-  if (!Number.isInteger(id) || id < 1) throw httpError(400, "Invalid id");
-  return id;
-}
-
-const normEmail = (e) => String(e ?? "").trim().toLowerCase();
-
-function checkPassword(p) {
-  if (String(p ?? "").length < 8) throw httpError(400, "Password must be at least 8 characters");
-}
 // checks the session AND that the admin still exists, so a deleted admin is locked out at once
 async function requireAdmin(sql, req) {
   let adminId;
