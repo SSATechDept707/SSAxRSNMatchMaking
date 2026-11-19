@@ -102,21 +102,6 @@ export default function CreateAdminModal({ onClose, onSuccess }: Props) {
                     </div>
                 ) : (
                     <form onSubmit={createAdmin} className="p-6 space-y-4">
-
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-600 mb-1">
-                                Email
-                            </label>
-                            <input
-                                name="email"
-                                type="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                                className="w-full border rounded-lg px-3 py-2 text-sm"
-                            />
-                        </div>
-
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">
                                 Username
@@ -131,7 +116,20 @@ export default function CreateAdminModal({ onClose, onSuccess }: Props) {
                         </div>
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">
-                               Company (only applicable if user's company is a member)
+                                Email
+                            </label>
+                            <input
+                                name="email"
+                                type="email"
+                                value={form.email}
+                                onChange={handleChange}
+                                required
+                                className="w-full border rounded-lg px-3 py-2 text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-600 mb-1">
+                                Company (only applicable if user's company is a member)
                             </label>
                             <select
                                 name="companyId"
