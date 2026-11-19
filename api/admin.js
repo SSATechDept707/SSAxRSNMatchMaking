@@ -400,15 +400,15 @@ ORDER BY age::int
  // for Applications made + count of how many // bar graph
  async function getUsersSentApplications(sql) {
   return await sql`
-  SELECT n_apps AS applications_made, count(*)::int AS candidates
-   FROM  ( 
-    SELECT c.id, count(a.id)::int AS n_apps
-    FROM candidates c
-    LEFT JOIN applications_made ON a.candidate_id = c.id 
-    GROUP BY c.id
-   ) per_candidate
-   GROUP BY n_apps
-   ORDER BY n_apps
+  SELECT n_apps AS applications, count(*)::int AS candidates
+    FROM (
+      SELECT c.id, count(a.id)::int AS n_apps
+      FROM candidates c
+      LEFT JOIN applications_made a ON a.candidate_id = c.id
+      GROUP BY c.id
+    ) per_candidate
+    GROUP BY n_apps
+    ORDER BY n_apps
   `;
  }
 
