@@ -78,6 +78,15 @@ export default async function handler(req, res) {
       if (req.query.companies) {
         return res.status(200).json(await getListOfCompanyNames(sql));
       }
+
+      if (req.query.analytics) {
+        const [ages, applications] = await Promise.all([
+          getCandidatesWAge(sql),
+          getUsersSentApplications(sql),
+        ]);
+        return res.status(200).json({ ages, applications });
+      }
+      
       return res.status(400).json({ error: "Unknown request" });
     }
 
@@ -184,10 +193,17 @@ async function createAdmin(sql, { email, password, companyId, role, username }) 
     RETURNING id, email, company_id, role, username`;
   return row;
 }
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Shared queries
 /////////////////////////////////////////////////////////////////////////////////////////////
-
+// View Data tab
+/////////////////////////////////////////////////////////////////////////////////////////////
 // filters are all optional
 async function listCandidates(sql, { status = null, verified = null, search = null } = {}) {
   if (status !== null && !STATUSES.includes(status)) throw httpError(400, "Invalid status");
@@ -220,10 +236,6 @@ async function fetchApplications(sql, { id = null, verifiedOnly = false, intervi
     ORDER BY a.id DESC`;
   return rows.map(({ email_lookup, ...r }) => ({ ...r, email: readEmail({ email: r.email, email_lookup }) }));
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-// View Data tab
-/////////////////////////////////////////////////////////////////////////////////////////////
 
 // { verified: true | false, search? }
 async function getCandidatesByVerified(sql, body) {
@@ -312,7 +324,7 @@ async function updateCandidateVerification(sql, body) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Admin accounts (new rows are encrypted + hashed)
+// Admin accounts 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 async function listAdmins(sql) {
@@ -320,21 +332,7 @@ async function listAdmins(sql) {
   return rows.map(publicAdmin);
 }
 
-// // { username, email, password, role? }
-// async function createAdmin(sql, { username, email, password, role }) {
-//   if (!String(username ?? "").trim()) throw httpError(400, "Username is required");
-//   const e = checkEmail(email);
-//   checkPassword(password);
-
-//   const [row] = await sql`
-//     INSERT INTO admins (username, email, email_lookup, passwd, role)
-//     VALUES (${username.trim()}, ${encrypt(e)}, ${hashEmail(e)}, ${await bcrypt.hash(password, 10)}, ${role ?? null})
-//     RETURNING *`;
-//   return publicAdmin(row);
-// }
-
-// { adminId, username?, email?, role?, newPassword?, currentPassword? }
-// changing your own password needs currentPassword
+//for update. including pwd verification(e.g enter current pwd first , enter new pwd)
 async function updateAdmin(sql, body, myId) {
   const id = parseId(body.adminId);
   const username = body.username === undefined ? null : String(body.username).trim();
@@ -373,7 +371,7 @@ async function updateAdmin(sql, body, myId) {
   return publicAdmin(row);
 }
 
-// { adminId }
+// { adminId } auth only staff/superadminn
 async function deleteAdmin(sql, body, myId) {
   const id = parseId(body.adminId);
   if (id === myId) throw httpError(400, "You can't delete your own account");
@@ -381,6 +379,41 @@ async function deleteAdmin(sql, body, myId) {
   if (!row) throw httpError(404, "Admin not found");
   return { deleted: row.id };
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Analytics
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//3 charts
+//for age range sign up successfully //line graph
+ async function getCandidatesWAge(sql) {
+  return await sql`
+SELECT age::int AS age, count(*)::int AS total
+FROM candidates
+WHERE verification_status = ${VERIFIED} AND age ~ '^[0-9]+$'
+GROUP BY age::int
+ORDER BY age::int
+`;
+
+ } 
+
+ // for Applications made + count of how many // bar graph
+ async function getUsersSentApplications(sql) {
+  return await sql`
+  SELECT n_apps AS applications_made, count(*)::int AS candidates
+   FROM  ( 
+    SELECT c.id, count(a.id)::int AS n_apps
+    FROM candidates c
+    LEFT JOIN applications_made ON a.candidate_id = c.id 
+    GROUP BY c.id
+   ) per_candidate
+   GROUP BY n_apps
+   ORDER BY n_apps
+  `;
+ }
+
+
+ //
 
 const ACTIONS = {
   getCandidatesByVerified,
