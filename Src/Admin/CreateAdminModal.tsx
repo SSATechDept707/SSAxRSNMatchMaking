@@ -20,7 +20,7 @@ export default function CreateAdminModal({ onClose, onSuccess}: Props) {
     });
 
 
-function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+function handleChange (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const {name, value} = e.target;
 
     setForm(prev => ({
@@ -83,7 +83,7 @@ function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                 {success ? (
                     <div className="p-10 flex flex-col items-center text-center gap-3">
                         <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
-                            <CheckCircle2 size={36} className="text-green-600" />
+                            <PartyPopper size={36} className="text-green-600" />
                         </div>
                         <h3 className="text-lg font-bold text-[#262261]">Admin created</h3>
                         <p className="text-sm text-gray-500">
@@ -91,7 +91,7 @@ function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                         </p>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    <form onSubmit={createAdmin} className="p-6 space-y-4">
 
                         <div>
                             <label className="block text-xs font-semibold text-gray-600 mb-1">
