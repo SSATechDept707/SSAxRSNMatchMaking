@@ -75,7 +75,10 @@ export default async function handler(req, res) {
       setSession(res, { role: "admin", adminId: admin.id, adminRole: admin.role ?? null });
       return res.status(200).json(admin);
     }
-
+    if (action === "createAdmin") {
+      requireSession(req, "admin");   
+      return res.status(201).json(await createAdmin(sql, body));
+    }
     const adminId = await requireAdmin(sql, req);
     const fn = ACTIONS[action];
     if (!fn) return res.status(400).json({ error: "Unknown action" });

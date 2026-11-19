@@ -7,7 +7,8 @@ import ManageUsers from "./ManageUsers";
 import CreateAdminModal from "./CreateAdminModal";
 import UserManagement from "./ManageUsers";
 
-type Section = "data" | "verify" | "manage" | "addAdmin";
+
+type Section = "data" | "verify" | "manage";
 
 const NAV: {key: Section; label: string; icon: string}[] = [ 
     {key: "data", label: "Analytics", icon: ChartPie },
@@ -19,6 +20,7 @@ const CAN_ADD_ADMIN = ["staff", "superadmin"];
 export default function Dashboard() {
     const { adminRole, logout } = useAuth();
     const [section, setSection] = useState<Section>("data");
+    const [addAdminModal, setAddAdminModal] = useState(false);
 
     // cosmetic only: the add-admin API must check the role itself too
     const canAddAdmin = !!adminRole && CAN_ADD_ADMIN.includes(adminRole.toLowerCase());
@@ -56,7 +58,7 @@ export default function Dashboard() {
 
                     {canAddAdmin && (
                         <button
-                            onClick={() => setSection("addAdmin")}
+                            onClick={() => setAddAdminModal(true)}
                             className={`${itemClass("addAdmin")} mt-4 border border-dashed border-white/40`}
                         >
                             + Add admin
@@ -70,8 +72,16 @@ export default function Dashboard() {
 
     {section === "verify" && <VerifyUsers />}
     {section === "manage" && <UserManagement />}
+
+
 </main>
             </div>
+            {addAdminModal && (
+            <CreateAdminModal
+            onClose={() => setAddAdminModal(false)}
+            onSuccess={() => setAddAdminModal(false)}
+            />
+            )}
         </div>
     );
 }
