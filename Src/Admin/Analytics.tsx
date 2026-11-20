@@ -16,8 +16,6 @@ function fillAges(rows: AgeRow[]) {
     if (!rows.length) return [];
     const map = new Map(rows.map((r) => [r.age, r.total]));
     const ages = rows.map((r) => r.age);
-    const min = Math.min(...ages);
-    const max = Math.max(...ages);
     const out: { age: number; signups: number }[] = [];
     for (let a = min; a <= max; a++) out.push({ age: a, signups: map.get(a) ?? 0 });
     return out;
@@ -189,7 +187,7 @@ export default function Analytics() {
             {/* BAR: has the candidate submitted an application? */}
             <FadeCard
                 title="Applications submitted"
-                subtitle="Yes is split by how many applications each candidate sent"
+                subtitle="how many applications have been sent"
                 delay={150}
                 action={
                     <div className="flex items-center gap-2 text-xs text-gray-500">
