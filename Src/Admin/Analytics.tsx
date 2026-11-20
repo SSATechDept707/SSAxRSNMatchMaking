@@ -22,15 +22,16 @@ function fillAges(rows: AgeRow[]) {
     for (let a = min; a <= max; a++) out.push({ age: a, signups: map.get(a) ?? 0 });
     return out;
 }
-// light pink → deep red, scaled between the smallest and largest value
+
+
 const LIGHT = [254, 226, 226];
 const DEEP = [153, 27, 27];
-function shade(value: number, min: number, max: number) {
-    const t = max === min ? 0.6 : (value - min) / (max - min);
+
+function shade(apps: number, maxApps: number) {
+    const t = maxApps <= 1 ? 0.5 : 0.15 + 0.85 * ((apps - 1) / (maxApps - 1));
     const c = LIGHT.map((l, i) => Math.round(l + (DEEP[i] - l) * t));
     return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
 }
-
 /* ---------- card that fades in ---------- */
 
 function FadeCard({
@@ -124,9 +125,7 @@ export default function Analytics() {
     // applications chart: one "Yes" column split into segments, one "No" column
     const submitted = data.applications.filter((a) => a.applications > 0);
     const notSubmitted = data.applications.find((a) => a.applications === 0)?.candidates ?? 0;
-    const counts = submitted.map((a) => a.candidates);
-    const min = Math.min(...counts);
-    const max = Math.max(...counts);
+    const maxApps = Math.max(1, ...submitted.map((a) => a.applications));
     console.log(submitted, min, max);
 
     
@@ -197,7 +196,7 @@ export default function Analytics() {
                         fewer
                         <div
                             className="h-2 w-24 rounded"
-                            style={{ background: `linear-gradient(to right, ${shade(0, 0, 1)}, ${shade(1, 0, 1)})` }}
+                            style={{ background: `linear-gradient(to right,${shade(1, 2)}, ${shade(2, 2)})` }}
                         />
                         more candidates
                     </div>
@@ -219,7 +218,7 @@ export default function Analytics() {
                                     dataKey={`a${a.applications}`}
                                     name={`${a.applications} application${a.applications === 1 ? "" : "s"}`}
                                     stackId="s"
-                                    fill={shade(a.candidates, min, max)}
+                                    fill={shade(a.applications, maxApps)}
                                     stroke="#fff"
                                     animationDuration={1200}
                                     onMouseEnter={() => setHoverKey(`a${a.applications}`)}
