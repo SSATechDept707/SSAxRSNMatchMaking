@@ -16,6 +16,8 @@ function fillAges(rows: AgeRow[]) {
     if (!rows.length) return [];
     const map = new Map(rows.map((r) => [r.age, r.total]));
     const ages = rows.map((r) => r.age);
+    const min = Math.min(...ages);
+    const max = Math.max(...ages);
     const out: { age: number; signups: number }[] = [];
     for (let a = min; a <= max; a++) out.push({ age: a, signups: map.get(a) ?? 0 });
     return out;
@@ -124,7 +126,7 @@ export default function Analytics() {
     const submitted = data.applications.filter((a) => a.applications > 0);
     const notSubmitted = data.applications.find((a) => a.applications === 0)?.candidates ?? 0;
     const maxApps = Math.max(1, ...submitted.map((a) => a.applications));
-    console.log(submitted, min, max);
+    console.log(submitted, maxApps);
 
     
     const yesRow: Record<string, string | number> = { name: "Yes" };
