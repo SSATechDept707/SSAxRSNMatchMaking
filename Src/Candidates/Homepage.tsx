@@ -37,6 +37,7 @@ export default function CandidateHome() {
     const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
     const [search, setSearch] = useState("");
     const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+    const [appliedIds, setAppliedIds] = useState<Set<number>>(new Set());
 
     const [showModal, setShowModal] =  useState(false);
     const [recipients , setRecipients] = useState<string[]>([]);
@@ -46,9 +47,11 @@ export default function CandidateHome() {
 
         async function load() {
             try {
-                const [jobsRes, meRes] = await Promise.all([
+                const [jobsRes, meRes, appsRes] = await Promise.all([
                     fetch("/api/jobPostings"),
                     fetch("/api/candidates"),
+                    fetch("/api/applications"),
+
                 ]);
 
                 // session expired: clearing the role makes the route guard send them to login
@@ -60,10 +63,12 @@ export default function CandidateHome() {
 
                 const jobsData: Job[] = await jobsRes.json();
                 const meData: Profile | null = meRes.ok ? await meRes.json() : null;
+                const appsData: { posting_id: number }[] = appsRes.ok ? await appsRes.json() : [];
 
                 if (!cancelled) {
                     setJobs(jobsData);
                     setProfile(meData);
+                    setAppliedIds(new Set(apps.map((a) => a.posting_id)));
                     setLoadState("ready");
                 }
             } catch {
@@ -106,7 +111,7 @@ export default function CandidateHome() {
                 s.toLowerCase().includes(q)
             )
     );
-
+    const applied = appliedIds.has(job.id);
     return (
         <div className="min-h-screen w-full bg-[#262261] text-white pb-12">
             {/* header: logo left, profile button + greeting right */}
@@ -259,27 +264,28 @@ export default function CandidateHome() {
 
                                     {/* SUBMIT CV BUTTON */}
                                     <button
-                                        type="button"
-                                        disabled={!isVerified}
-                                        onClick={() => handleSubmitCv(job)}
-                                        title={
-                                            isVerified
-                                                ? undefined
-                                                : "Your account must be verified first"
-                                        }
-                                        className={`md:w-[170px] rounded-2xl py-4 text-lg font-medium transition-colors ${isVerified
-                                                ? "bg-[#0e7490] hover:bg-[#0891b2] text-white"
-                                                : "bg-[#0f4f5f] text-white/40 cursor-not-allowed"
-                                            }`}
-                                    >
-                                        Submit CV
-                                    </button>
+    type="button"
+    disabled={!isVerified || applied}
+    onClick={() => handleSubmitCv(job)}
+    title={applied ? "You've already applied" : isVerified ? undefined : "Your account must be verified first"}
+    className={`md:w-[170px] rounded-2xl py-4 text-lg font-medium transition-colors ${
+        applied
+            ? "bg-green-700/60 text-white/80 cursor-default"
+            : isVerified
+            ? "bg-[#0e7490] hover:bg-[#0891b2] text-white"
+            : "bg-[#0f4f5f] text-white/40 cursor-not-allowed"
+    }`}
+>
+    {applied ? "Applied" : "Submit CV"}
+</button>
                                     {showModal && selectedJobId !== null && (
     <PopUpModal
         jobId={selectedJobId}
         recipients={recipients}
         onClose={() => setShowModal(false)}
-        onSubmitted={() => { /* e.g. refresh the list or show a "Applied" badge */ }}
+        onSubmitted={() =>
+            setAppliedIds((prev) => new Set(prev).add(selectedJobId))
+        }
     />
 )}
                                 </li>
