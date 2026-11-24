@@ -111,7 +111,7 @@ export default function CandidateHome() {
                 s.toLowerCase().includes(q)
             )
     );
-    const applied = appliedIds.has(job.id);
+  
     return (
         <div className="min-h-screen w-full bg-[#262261] text-white pb-12">
             {/* header: logo left, profile button + greeting right */}
@@ -190,7 +190,7 @@ export default function CandidateHome() {
                                 ...(job.tech_skills ?? []),
                                 ...(job.soft_skills ?? []),
                             ];
-
+                            const applied = appliedIds.has(job.id);
                             return (
                                 <li
                                     key={job.id}
