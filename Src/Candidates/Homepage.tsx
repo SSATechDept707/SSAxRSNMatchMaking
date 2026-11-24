@@ -68,7 +68,7 @@ export default function CandidateHome() {
                 if (!cancelled) {
                     setJobs(jobsData);
                     setProfile(meData);
-                    setAppliedIds(new Set(apps.map((a) => a.posting_id)));
+                    setAppliedIds(new Set(appsData.map((a) => a.posting_id)));
                     setLoadState("ready");
                 }
             } catch {
