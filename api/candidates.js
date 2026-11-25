@@ -183,7 +183,7 @@ async function listCandidates(status) {
 
 // candidate (own) or admin: change name, email, age, past job role, or password
 async function updateCandidate(id, body = {}, actor) {
-  const { name, email, age, pastJobRole, prefName, newPassword, currentPassword } = body;
+  const { name, email, age, pastJobRole, prefName, newPassword, currentPassword, profile_url } = body;
 
   const fullName = name === undefined ? null : String(name).trim();
   const preferName = prefName === undefined ? null : String(prefName).trim();
@@ -222,7 +222,8 @@ async function updateCandidate(id, body = {}, actor) {
           passwd         = COALESCE(${passwordHash}, passwd),
           age            = COALESCE(${parsedAge}::int, age),
           past_role  = COALESCE(${parsedRole}, past_role),
-          preferred_name = COALESCE(${preferName}, preferred_name)
+          preferred_name = COALESCE(${preferName}, preferred_name),
+          headshot_url = ${profile_url}
       WHERE id = ${id}
       RETURNING *`;
   if (!row) throw httpError(404, "Candidate not found");
