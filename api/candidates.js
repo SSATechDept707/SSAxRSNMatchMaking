@@ -89,6 +89,11 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
       const actor = getActor(req);
 
+      // candidate: their own applications (?postings=1). Must come before the return below.
+      if (req.query.postings && actor.role === "candidate") {
+        return res.status(200).json(await getApplicationsByCandidate(actor.candidateId));
+      }
+
       // admin: list candidates (optionally ?status=unverified) or fetch one with ?id=
       if (actor.role === "admin" && !req.query.id) {
         return res.status(200).json(await listCandidates(req.query.status));
@@ -97,10 +102,6 @@ export default async function handler(req, res) {
       const candidate = await getCandidateById(resolveTargetId(req, actor));
       if (!candidate) return res.status(404).json({ error: "Candidate not found" });
       return res.status(200).json(candidate);
-
-      if (req.query.postings && actor.role === "candidate") {
-        return res.status(200).json(await getApplicationsByCandidate(sql, actor.candidateId));
-      }
     }
 
     if (req.method === "PATCH") {
@@ -181,7 +182,7 @@ async function listCandidates(status) {
   return rows.map(toPublic);
 }
 
-// candidate (own) or admin: change name, email, age, past job role, or password
+// candidate (own) or admin: change name, email, dob, past job role, headshot or password
 async function updateCandidate(id, body = {}, actor) {
   const { name, email, dob, pastJobRole, prefName, newPassword, currentPassword, headshotUrl } = body;
 
@@ -189,7 +190,7 @@ async function updateCandidate(id, body = {}, actor) {
   const preferName = prefName === undefined ? null : String(prefName).trim();
   if (name !== undefined && !fullName) throw httpError(400, "Name can't be empty");
   if (prefName !== undefined && !preferName) throw httpError(400, "Name can't be empty");
-  const parsedAge = parseAge(age);
+  const parsedAge = parseAge(dob);
   const parsedRole = parsePastJobRole(pastJobRole);
 
   let encryptedEmail = null;
@@ -214,11 +215,14 @@ async function updateCandidate(id, body = {}, actor) {
     passwordHash = await bcrypt.hash(String(newPassword), 10);
   }
 
-  const headshot_url = headshotUrl === undefined ? null : String(headshot_url).trim();
-  const allowed = `${process.env.AWS_ENDPOINT_URL_S3}/company-logos-and-headshots/headshots/${id}/`;
-  if (headshot_url !== null && !headshot_url.startsWith(allowed)) {
+  // headshot: null means "not sent, leave it alone". Only URLs inside this
+  // candidate's own folder in the bucket are accepted.
+  const parsedHeadshot = headshotUrl === undefined ? null : String(headshotUrl).trim();
+  const allowedPrefix = `${process.env.AWS_ENDPOINT_URL_S3}/company-logos-and-headshots/headshots/${id}/`;
+  if (parsedHeadshot !== null && !parsedHeadshot.startsWith(allowedPrefix)) {
     throw httpError(400, "Invalid image URL");
   }
+
   const [row] = await sql`
       UPDATE candidates SET
           full_name      = COALESCE(${fullName}, full_name),
@@ -226,9 +230,9 @@ async function updateCandidate(id, body = {}, actor) {
           email_lookup   = COALESCE(${emailLookup}, email_lookup),
           passwd         = COALESCE(${passwordHash}, passwd),
           dob            = COALESCE(${parsedAge}::int, dob),
-          past_role  = COALESCE(${parsedRole}, past_role),
+          past_role      = COALESCE(${parsedRole}, past_role),
           preferred_name = COALESCE(${preferName}, preferred_name),
-          headshot_url = COALESCE(${headshot_url}, headshot_url)
+          headshot_url   = COALESCE(${parsedHeadshot}, headshot_url)
       WHERE id = ${id}
       RETURNING *`;
   if (!row) throw httpError(404, "Candidate not found");
@@ -252,8 +256,7 @@ async function updateCandidateStatus(id, status) {
   return toPublic(row);
 }
 
-
-async function getApplicationsByCandidate() {
+async function getApplicationsByCandidate(candidateId) {
   return await sql`
     SELECT a.id AS application_id, a.application_status, a.reason_for_rejection, a.have_interviewed,
            j.id AS posting_id, j.title, j.description, j.pay_range, j.soft_skills, j.tech_skills,
@@ -264,5 +267,4 @@ async function getApplicationsByCandidate() {
     JOIN member_companies c  ON c.id = j.company_id
     WHERE a.candidate_id = ${candidateId}
     ORDER BY a.id DESC`;
-
 }
