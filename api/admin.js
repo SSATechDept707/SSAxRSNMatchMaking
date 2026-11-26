@@ -388,7 +388,7 @@ async function deleteAdmin(sql, body, myId) {
 //for age range sign up successfully //line graph
  async function getCandidatesWAge(sql) {
   return await sql`
-  SELECT date_part('year', age(cand.dob))::int AS age, count(*)::int AS total
+  SELECT date_part('year', age(dob))::int AS age, count(*)::int AS total
   FROM candidates
   WHERE verification_status = ${VERIFIED} AND dob IS NOT NULL
   GROUP BY 1
