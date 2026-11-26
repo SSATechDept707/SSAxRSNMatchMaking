@@ -183,7 +183,7 @@ async function listCandidates(status) {
 
 // candidate (own) or admin: change name, email, age, past job role, or password
 async function updateCandidate(id, body = {}, actor) {
-  const { name, email, age, pastJobRole, prefName, newPassword, currentPassword, profile_url } = body;
+  const { name, email, age, pastJobRole, prefName, newPassword, currentPassword, headshotUrl } = body;
 
   const fullName = name === undefined ? null : String(name).trim();
   const preferName = prefName === undefined ? null : String(prefName).trim();
@@ -214,6 +214,11 @@ async function updateCandidate(id, body = {}, actor) {
     passwordHash = await bcrypt.hash(String(newPassword), 10);
   }
 
+  const headshot_url = headshotUrl === undefined ? null : String(headshot_url).trim();
+  const allowed = `${process.env.AWS_ENDPOINT_URL_S3}/company-logos-and-headshots/headshots/${id}/`;
+  if (headshot_url !== null && !headshot_url.startsWith(allowed)) {
+    throw httpError(400, "Invalid image URL");
+  }
   const [row] = await sql`
       UPDATE candidates SET
           full_name      = COALESCE(${fullName}, full_name),
@@ -223,7 +228,7 @@ async function updateCandidate(id, body = {}, actor) {
           age            = COALESCE(${parsedAge}::int, age),
           past_role  = COALESCE(${parsedRole}, past_role),
           preferred_name = COALESCE(${preferName}, preferred_name),
-          headshot_url = ${profile_url}
+          headshot_url = COALESCE(${headshot_url}, headshot_url)
       WHERE id = ${id}
       RETURNING *`;
   if (!row) throw httpError(404, "Candidate not found");
