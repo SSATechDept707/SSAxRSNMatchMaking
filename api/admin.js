@@ -209,7 +209,7 @@ async function listCandidates(sql, { status = null, verified = null, search = nu
   if (status !== null && !STATUSES.includes(status)) throw httpError(400, "Invalid status");
   const pattern = likePattern(search);
   const rows = await sql`
-    SELECT * FROM candidates
+  SELECT *, date_part('year', age(dob))::int AS age FROM candidates
     WHERE (${status}::text IS NULL OR verification_status = ${status})
       AND (${verified}::boolean IS NULL OR (COALESCE(verification_status, '') = ${VERIFIED}) = ${verified})
       AND (${pattern}::text IS NULL OR full_name ILIKE ${pattern})
@@ -222,7 +222,7 @@ async function fetchApplications(sql, { id = null, verifiedOnly = false, intervi
     SELECT a.id, a.candidate_id, a.posting_id, a.company_id,
            a.application_status, a.reason_for_rejection, a.have_interviewed,
            j.title AS job_title, co.company_name,
-           cand.full_name, cand.email, cand.email_lookup, cand.age, cand.past_role,
+           cand.full_name, cand.email, cand.email_lookup, date_part('year', age(cand.dob))::int AS age,, cand.past_role,
            cand.verification_status
     FROM applications_made a
     JOIN job_postings j      ON j.id = a.posting_id
@@ -388,11 +388,11 @@ async function deleteAdmin(sql, body, myId) {
 //for age range sign up successfully //line graph
  async function getCandidatesWAge(sql) {
   return await sql`
-SELECT age::int AS age, count(*)::int AS total
-FROM candidates
-WHERE verification_status = ${VERIFIED} AND age ~ '^[0-9]+$'
-GROUP BY age::int
-ORDER BY age::int
+  SELECT date_part('year', age(cand.dob))::int AS age, count(*)::int AS total
+  FROM candidates
+  WHERE verification_status = ${VERIFIED} AND dob IS NOT NULL
+  GROUP BY 1
+  ORDER BY 1
 `;
 
  } 
