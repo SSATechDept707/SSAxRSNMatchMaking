@@ -146,7 +146,7 @@ async function createCandidate({ name, email, password, age, pastJobRole, prefNa
   const emailLookup = hashEmail(normalizedEmail);
 
   const rows = await sql`
-      INSERT INTO candidates (full_name, email, passwd, email_lookup, age, past_role, preferred_name)
+      INSERT INTO candidates (full_name, email, passwd, email_lookup, dob, past_role, preferred_name)
       VALUES (${name.trim()}, ${encryptedEmail}, ${passwordHash}, ${emailLookup},
               ${parsedAge}, ${parsedRole}, ${prefName})
       RETURNING id, full_name`;
@@ -174,7 +174,7 @@ async function getCandidateById(id) {
 // admin: all candidates, optionally filtered by verification_status
 async function listCandidates(status) {
   const rows = status
-    ? await sql`SELECT id, full_name, preferred_name, email, age, past_role,
+    ? await sql`SELECT id, full_name, preferred_name, email, dob, past_role,
     verification_status, created_at
     FROM candidates WHERE verification_status = ${status} ORDER BY id DESC`
     : await sql`SELECT * FROM candidates ORDER BY id DESC`;
@@ -183,7 +183,7 @@ async function listCandidates(status) {
 
 // candidate (own) or admin: change name, email, age, past job role, or password
 async function updateCandidate(id, body = {}, actor) {
-  const { name, email, age, pastJobRole, prefName, newPassword, currentPassword, headshotUrl } = body;
+  const { name, email, dob, pastJobRole, prefName, newPassword, currentPassword, headshotUrl } = body;
 
   const fullName = name === undefined ? null : String(name).trim();
   const preferName = prefName === undefined ? null : String(prefName).trim();
@@ -225,7 +225,7 @@ async function updateCandidate(id, body = {}, actor) {
           email          = COALESCE(${encryptedEmail}, email),
           email_lookup   = COALESCE(${emailLookup}, email_lookup),
           passwd         = COALESCE(${passwordHash}, passwd),
-          age            = COALESCE(${parsedAge}::int, age),
+          dob            = COALESCE(${parsedAge}::int, dob),
           past_role  = COALESCE(${parsedRole}, past_role),
           preferred_name = COALESCE(${preferName}, preferred_name),
           headshot_url = COALESCE(${headshot_url}, headshot_url)
