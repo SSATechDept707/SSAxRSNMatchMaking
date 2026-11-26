@@ -6,7 +6,7 @@ export default function CandidateRegister() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
-    const [age, setAge] = useState("");
+    const [dob, setDob] = useState("");
     const [pastJobRole, setpastJobRole] = useState("");
     const [prefName, setPrefName] = useState("");
     const [error, setError] = useState("");
@@ -19,7 +19,7 @@ export default function CandidateRegister() {
             const res = await fetch("/api/candidates", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password, age, pastJobRole, prefName}),
+                body: JSON.stringify({ name, email, password, dob, pastJobRole, prefName}),
             });
             const data = await res.json();
 
@@ -99,12 +99,12 @@ export default function CandidateRegister() {
                         />
 
                         <label className="block text-xs font-semibold text-gray-600">
-                            Age
+                            Date of Birth
                         </label>
                         <input
-                            type="number"
-                            value={age}
-                            onChange={(e) => setAge(e.target.value)}
+                            type="date"
+                            value={dob}
+                            onChange={(e) => setDob(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
                          <label className="block text-xs font-semibold text-gray-600">
