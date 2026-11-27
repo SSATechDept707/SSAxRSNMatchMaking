@@ -11,7 +11,7 @@ import MemberRegister from "./login&Register/MemberRegister"
 import MemberHome from "./Members/Homepage";
 import CandidateHome from "./Candidates/Homepage";
 import AdminDashboard from "./Admin/Dashboard";
-import CandidateProfile from "./Candidates/Profile";
+import CandidateProfile from "./Profile/Candidate";
 
 
 export default function App() {
