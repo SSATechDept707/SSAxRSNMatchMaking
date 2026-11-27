@@ -40,7 +40,8 @@ export default async function handler(req: any, res: any) {
     return res.status(400).json({ error: "Max file size is 2 MB" });
 
   const folder = kind === "headshot" ? "headshots" : "logos";
-  const key = `${folder}/${s.id}/${randomUUID()}.${EXT[contentType]}`;
+  const ownerId = kind === "headshot" ? s.candidateId : s.id; // check the member session field for logos
+  const key = `${folder}/${ownerId}/${randomUUID()}.${EXT[contentType]}`;
   const uploadUrl = await getSignedUrl(
     s3,
     new PutObjectCommand({
