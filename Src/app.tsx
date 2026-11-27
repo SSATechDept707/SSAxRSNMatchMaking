@@ -28,7 +28,7 @@ export default function App() {
         
         <Route element={<RequireRole role="candidate" />}>
           <Route path="/Candidates/Homepage" element={<CandidateHome />} />
-          <Route path="/Candidates/Profile" element={<CandidateProfile />} />
+          <Route path="/Profile/Candidate" element={<CandidateProfile />} />
         </Route>
 
         <Route element={<RequireRole role="member" />}>
